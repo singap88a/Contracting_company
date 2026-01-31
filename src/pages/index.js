@@ -1,0 +1,10 @@
+export { default as Home } from './Home.jsx';
+export { default as About } from './About.jsx';
+export { default as Projects } from './Projects.jsx';
+export { default as ProjectDetails } from './ProjectDetails.jsx';
+export { default as Services } from './Services.jsx';
+export { default as Careers } from './Careers.jsx';
+export { default as Contact } from './Contact.jsx';
+export { default as ServiceRequest } from './ServiceRequest.jsx';
+export { default as Terms } from './Terms.jsx';
+export { default as Privacy } from './Privacy.jsx';
