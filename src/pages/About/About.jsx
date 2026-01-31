@@ -1,10 +1,10 @@
-import AboutHero from '../components/About/AboutHero';
-import Statistics from '../components/Home/Statistics';
-import AboutIntro from '../components/About/AboutIntro';
-import AboutValues from '../components/About/AboutValues';
-import Team from '../components/About/Team';
-import TestimonialsImmersive from '../components/About/TestimonialsImmersive';
-import LatestNews from '../components/About/LatestNews';
+import AboutHero from '../../components/About/AboutHero';
+import Statistics from '../../components/Home/Statistics';
+import AboutIntro from '../../components/About/AboutIntro';
+import AboutValues from '../../components/About/AboutValues';
+import Team from '../../components/About/Team';
+import TestimonialsImmersive from '../../components/About/TestimonialsImmersive';
+import LatestNews from '../../components/About/LatestNews';
  
 const About = () => {
   return (

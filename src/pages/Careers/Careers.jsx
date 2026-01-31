@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import JobList from '../components/Careers/JobList';
-import ApplicationForm from '../components/Careers/ApplicationForm';
+import JobList from '../../components/Careers/JobList';
+import ApplicationForm from '../../components/Careers/ApplicationForm';
 
 const Careers = () => {
   const jobs = [

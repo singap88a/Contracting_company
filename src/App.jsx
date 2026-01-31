@@ -1,18 +1,18 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
-import Home from './pages/Home';
-import About from './pages/About';
-import Projects from './pages/Projects';
-import ProjectDetails from './pages/ProjectDetails';
-import Services from './pages/Services';
-import Careers from './pages/Careers';
-import Contact from './pages/Contact';
-import ServiceRequest from './pages/ServiceRequest';
-import Terms from './pages/Terms';
-import Privacy from './pages/Privacy';
-import Articles from './pages/Articles';
-import ArticleDetails from './pages/ArticleDetails';
+import Home from './pages/Home/Home';
+import About from './pages/About/About';
+import Projects from './pages/Projects/Projects';
+import ProjectDetails from './pages/Projects/ProjectDetails';
+import Services from './pages/Services/Services';
+import Careers from './pages/Careers/Careers';
+import Contact from './pages/Contact/Contact';
+import ServiceRequest from './pages/ServiceRequest/ServiceRequest';
+import Terms from './pages/Legal/Terms';
+import Privacy from './pages/Legal/Privacy';
+import Articles from './pages/Articles/Articles';
+import ArticleDetails from './pages/Articles/ArticleDetails';
 
 function App() {
   return (

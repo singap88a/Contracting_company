@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import ProjectFilter from '../components/Projects/ProjectFilter';
-import ProjectGrid from '../components/Projects/ProjectGrid';
+import ProjectFilter from '../../components/Projects/ProjectFilter';
+import ProjectGrid from '../../components/Projects/ProjectGrid';
 
 const Projects = () => {
   const [filter, setFilter] = useState('all');

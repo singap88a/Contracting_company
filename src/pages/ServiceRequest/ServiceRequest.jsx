@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from '../components/ServiceRequest/Header';
-import ServiceForm from '../components/ServiceRequest/ServiceForm';
+import Header from '../../components/ServiceRequest/Header';
+import ServiceForm from '../../components/ServiceRequest/ServiceForm';
 
 const ServiceRequest = () => {
   return (

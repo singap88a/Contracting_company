@@ -1,6 +1,6 @@
 import React from 'react';
-import ServicesList from '../components/Services/ServicesList';
-import Banner from '../components/Services/Banner';
+import ServicesList from '../../components/Services/ServicesList';
+import Banner from '../../components/Services/Banner';
 
 const Services = () => {
   return (

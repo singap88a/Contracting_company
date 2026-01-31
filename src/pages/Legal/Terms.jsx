@@ -1,5 +1,5 @@
 import React from 'react';
-import TermsContent from '../components/Terms/TermsContent';
+import TermsContent from '../../components/Terms/TermsContent';
 
 const Terms = () => {
   return (
