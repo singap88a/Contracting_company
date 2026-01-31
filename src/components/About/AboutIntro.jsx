@@ -59,24 +59,7 @@ const AboutIntro = () => {
               ))}
             </div>
 
-            {/* إحصائية أنيقة */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="flex items-center gap-8"
-            >
-              <div className="text-right">
-                <div className="text-3xl md:text-4xl font-black text-primary-500">+120</div>
-                <div className="text-sm text-gray-500">مشروع ناجح</div>
-              </div>
-              <div className="h-12 w-px bg-gray-200"></div>
-              <div className="text-right">
-                <div className="text-3xl md:text-4xl font-black text-primary-500">15</div>
-                <div className="text-sm text-gray-500">عام من الخبرة</div>
-              </div>
-            </motion.div>
+        
           </motion.div>
 
           {/* تخطيط الصور الاحترافي جداً */}
