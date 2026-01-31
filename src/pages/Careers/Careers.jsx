@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import JobList from '../../components/Careers/JobList';
 import ApplicationForm from '../../components/Careers/ApplicationForm';
 
+import { motion } from 'framer-motion';
+
 const Careers = () => {
   const jobs = [
     { id: 1, title: 'مهندس مدني أول', location: 'الرياض', type: 'دوام كامل' },
@@ -13,21 +15,55 @@ const Careers = () => {
   const [selectedJob, setSelectedJob] = useState(null);
 
   return (
-    <div className="py-20 bg-gray-50 min-h-screen">
-      <div className="container mx-auto px-4 max-w-7xl">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-secondary-900 mb-6">انضم لفريقنا</h1>
-          <p className="text-xl text-gray-500 max-w-3xl mx-auto">
-            نبحث دائماً عن المبدعين والموهوبين للانضمام إلى عائلتنا. اكتشف الفرص المتاحة وكن جزءاً من نجاحنا.
-          </p>
+    <div className="bg-white min-h-screen">
+      {/* Hero Banner Section (Contact Style) */}
+      <section className="relative h-[40vh] md:h-[50vh] flex items-center overflow-hidden" dir="rtl">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" 
+            className="w-full h-full object-cover brightness-[0.4] contrast-110" 
+            alt="Construction" 
+          />
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-secondary-900/60 to-secondary-900/90"></div>
+          
+          {/* Decorative Elements */}
+          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Job Listings */}
-          <JobList jobs={jobs} selectedJob={selectedJob} setSelectedJob={setSelectedJob} />
+        <div className="container mx-auto px-4 max-w-7xl relative z-10 text-right">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="flex items-center gap-3  ">
+              <div className="w-12 h-px bg-primary-500/50"></div>
+              <span className="text-primary-500 font-extrabold uppercase tracking-widest text-sm">مسيرتك المهنية تبدأ هنا</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-black text-white leading-tight">
+              انضم إلى <span className="text-primary-500">عائـلتنا</span>
+            </h1>
+            
+            <p className="text-gray-300 text-lg md:text-xl mt-6 max-w-2xl">
+              نبحث دائماً عن المبدعين والموهوبين للانضمام إلى فريقنا. اكتشف الفرص المتاحة وكن جزءاً من مسيرة نجاحنا وبناء المستقبل.
+            </p>
+          </motion.div>
+        </div>
+      </section>
 
-          {/* Application Form */}
-          <ApplicationForm selectedJob={selectedJob} />
+      {/* Content Section Section (Overlapping Hero) */}
+      <div className="container mx-auto px-4 max-w-7xl -mt-20 relative z-20 pb-24">
+        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-secondary-900/10 p-8 md:p-12 border border-gray-100">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            {/* Job Listings */}
+            <JobList jobs={jobs} selectedJob={selectedJob} setSelectedJob={setSelectedJob} />
+
+            {/* Application Form */}
+            <ApplicationForm selectedJob={selectedJob} />
+          </div>
         </div>
       </div>
     </div>

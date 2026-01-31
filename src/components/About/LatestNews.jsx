@@ -15,7 +15,7 @@ const LatestNews = () => {
       id: 2,
       title: "حصول الشركة على جائزة الابتكار الهندسي للعام الثاني",
       date: "25 يناير 2026",
-      image: "https://images.unsplash.com/photo-1541888946425-d81bb194882e?q=80&w=600&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop"
     },
     {
       id: 3,

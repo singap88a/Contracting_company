@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Clock, User, Tag } from 'lucide-react';
+import { ArrowLeft, Clock, User, Tag, Sparkles } from 'lucide-react';
 
 const articles = [
   {
@@ -20,7 +20,7 @@ const articles = [
     date: "25 يناير 2026",
     author: "سارة علي",
     category: "جوائز",
-    image: "https://images.unsplash.com/photo-1541888946425-d81bb194882e?q=80&w=800&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop"
   },
   {
     id: 3,
@@ -38,81 +38,99 @@ const articles = [
     date: "10 يناير 2026",
     author: "منى عبدالله",
     category: "استدامة",
-    image: "https://images.unsplash.com/photo-1503387762-592fe58ef452?q=80&w=800&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop"
   },
 ];
 
 const Articles = () => {
   return (
-    <div className="bg-gray-50 pb-24 text-right">
-      {/* Header */}
-      <section className="relative py-32 bg-secondary-950 overflow-hidden">
-        <div className="absolute inset-0 z-0 opacity-20 bg-[radial-gradient(#f97316_1px,transparent_1px)] [background-size:40px_40px]"></div>
+    <div className="bg-white pb-24 text-right min-h-screen">
+      {/* Compact Header - Professional White Style */}
+      <section className="relative py-16 bg-white overflow-hidden border-b border-gray-50">
+        {/* Subtle Background */}
+        <div className="absolute inset-0 z-0 opacity-[0.02]" style={{ backgroundImage: 'radial-gradient(#1E3A8A 1px, transparent 1px)', backgroundSize: '16px 16px' }}></div>
+        
         <div className="container mx-auto px-4 max-w-7xl relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center"
+            className="flex flex-col md:flex-row md:items-end md:justify-between gap-6"
           >
-            <span className="text-primary-500 font-black uppercase tracking-[0.4em] text-sm mb-6 block">المدونة والأخبار</span>
-            <h1 className="text-5xl md:text-7xl font-black text-white leading-tight">آخر <span className="text-primary-500">المستجدات</span> والبصمات</h1>
+            <div className="text-right">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-px bg-primary-500"></div>
+                <span className="text-primary-500 font-black uppercase tracking-[0.3em] text-[10px]">المدونة والأخبار</span>
+              </div>
+              <h1 className="text-4xl md:text-5xl font-black text-secondary-950 leading-tight">
+               <span className="text-secondary">آخر</span>  <span className="text-primary-500">المستجدات</span> <span className="text-secondary">والبصمات</span>
+              </h1>
+            </div>
+            
+            <div className="group bg-primary-50 px-6 py-3 rounded-full border border-primary-100 hidden md:flex items-center gap-3 transition-all hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/20 cursor-default">
+              <Sparkles size={14} className="text-primary-500 group-hover:text-white transition-colors animate-pulse" />
+              <p className="text-[10px] text-primary-900 group-hover:text-white font-black uppercase tracking-[0.2em] transition-colors">
+                بناء المستقبل برؤية هندسية واعدة
+              </p>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Articles Grid */}
-      <section className="py-24">
+      {/* Articles Grid - Minimalist Compact Cards */}
+      <section className="py-20">
         <div className="container mx-auto px-4 max-w-7xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {articles.map((article, index) => (
               <motion.div
                 key={article.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group bg-white rounded-[3.5rem] overflow-hidden border border-gray-100 shadow-xl hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-500"
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+                className="group relative flex flex-col bg-white rounded-3xl overflow-hidden border border-gray-100 hover:border-primary-500/20 hover:shadow-2xl hover:shadow-secondary-900/5 transition-all duration-500"
               >
-                <Link to={`/articles/${article.id}`} className="block relative aspect-[4/3] overflow-hidden">
+                {/* Compact Image with Tag */}
+                <Link to={`/articles/${article.id}`} className="block relative aspect-[16/9] overflow-hidden">
                    <img 
                       src={article.image} 
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                       alt={article.title} 
                    />
-                   <div className="absolute top-6 right-6 py-2 px-5 bg-primary-500 text-secondary-950 rounded-xl font-black text-[10px] uppercase tracking-widest">
+                   <div className="absolute top-4 right-4 py-1.5 px-4 bg-primary-500 text-white rounded-xl font-black text-[9px] uppercase tracking-wider">
                      {article.category}
                    </div>
                 </Link>
                 
-                <div className="p-10">
-                  <div className="flex items-center gap-6 text-gray-400 text-xs font-bold mb-6 justify-end">
-                    <div className="flex items-center gap-2">
-                      <span>{article.date}</span>
-                      <Clock size={14} />
-                    </div>
-                    <div className="flex items-center gap-2">
-                       <span>{article.author}</span>
-                       <User size={14} />
-                    </div>
+                <div className="p-8 flex flex-col flex-1">
+                  {/* Clean Meta */}
+                  <div className="flex items-center gap-4 text-gray-400 text-[10px] font-bold mb-4 justify-end">
+                    <span>{article.date}</span>
+                    <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
+                    <span>بواسطة {article.author}</span>
                   </div>
 
                   <Link to={`/articles/${article.id}`}>
-                    <h3 className="text-2xl font-black text-secondary-950 mb-6 group-hover:text-primary-500 transition-colors leading-tight line-clamp-2">
+                    <h3 className="text-xl font-black text-secondary-950 group-hover:text-primary-500 transition-colors leading-snug line-clamp-2">
                       {article.title}
                     </h3>
                   </Link>
                   
-                  <p className="text-gray-500 leading-relaxed mb-10 line-clamp-3 font-medium">
-                    {article.excerpt}
-                  </p>
-                  
-                  <Link 
-                    to={`/articles/${article.id}`} 
-                    className="flex items-center gap-3 text-primary-500 font-black uppercase tracking-widest text-sm group-hover:gap-5 transition-all justify-end"
-                  >
-                    <span>إقرأ التفاصيل</span>
-                    <ArrowLeft size={18} />
-                  </Link>
+                  {/* Minimal Excerpt or Button */}
+                  <div className="mt-6 pt-6 border-t border-gray-50 flex items-center justify-between">
+                    <Link 
+                      to={`/articles/${article.id}`} 
+                      className="text-primary-500 font-black text-xs flex items-center gap-2 group/link"
+                    >
+                      <ArrowLeft size={16} className="transition-transform group-hover/link:-translate-x-1" />
+                      <span>تفاصيل المقال</span>
+                    </Link>
+                    
+                    <div className="flex gap-1">
+                       <div className="w-1.5 h-1.5 rounded-full bg-gray-100 group-hover:bg-primary-500/30 transition-colors"></div>
+                       <div className="w-1.5 h-1.5 rounded-full bg-gray-100 group-hover:bg-primary-500/60 transition-colors"></div>
+                       <div className="w-1.5 h-1.5 rounded-full bg-gray-100 group-hover:bg-primary-500 transition-colors"></div>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             ))}

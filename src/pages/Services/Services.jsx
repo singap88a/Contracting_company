@@ -32,8 +32,8 @@ const Services = () => {
               <span className="text-primary-500 font-extrabold uppercase tracking-widest text-sm">خدماتنا الهندسية</span>
             </div>
             
-            <h1 className="text-5xl md:text-8xl font-black text-white leading-tight mb-6">
-              نـبني <span className="text-primary-500 text-shadow-glow">المستقبل</span><br />
+            <h1 className="text-5xl md:text-7xl font-black text-white leading-tight mb-6">
+              نـبني <span className="text-primary-500 text-shadow-glow">المستقبل</span> <br /> 
               <span className="text-white">بإتقان واحتراف</span>
             </h1>
             

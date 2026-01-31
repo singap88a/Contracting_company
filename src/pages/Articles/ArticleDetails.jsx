@@ -178,26 +178,6 @@ const ArticleDetails = () => {
                    
                    <p>إن التزامنا في صرح البناء يمتد إلى ما بعد تسليم المفاتيح. نحن نبني علاقات مستدامة مع عملائنا، مبنية على الثقة المتبادلة والجودة التي لا تقبل المساومة.</p>
                 </div>
-
-                {/* Tags & Footer Meta */}
-                <div className="flex items-center justify-between border-t border-gray-100 pt-12">
-                   <div className="flex items-center gap-4">
-                      <button className="flex items-center gap-2 py-3 px-8 bg-gray-50 text-gray-500 rounded-xl font-black text-sm hover:bg-primary-500 hover:text-white transition-all">
-                        <Share2 size={16} />
-                        <span>نشر المقال</span>
-                      </button>
-                      <button className="flex items-center gap-2 py-3 px-8 bg-gray-50 text-gray-500 rounded-xl font-black text-sm hover:bg-secondary-950 hover:text-white transition-all">
-                        <MessageSquare size={16} />
-                        <span>تعليقات</span>
-                      </button>
-                   </div>
-                   
-                   <div className="flex gap-3">
-                      {["مقاولات", "هندسة", "تطوير"].map((tag, i) => (
-                        <span key={i} className="py-2 px-5 bg-primary-100/50 text-primary-600 rounded-lg text-sm font-black select-none">#{tag}</span>
-                      ))}
-                   </div>
-                </div>
               </motion.article>
             </AnimatePresence>
           </div>
@@ -205,50 +185,37 @@ const ArticleDetails = () => {
           {/* Sidebar (8 Articles list) */}
           <aside className="lg:w-1/3">
              <div className="sticky top-32">
-                <div className="p-10 bg-gray-50 rounded-[3rem] border border-gray-100">
+                <div className="p-10 bg-gray-50 rounded-[2.5rem] border border-gray-100 shadow-sm">
                    <h4 className="text-2xl font-black text-secondary-950 mb-10 flex items-center justify-end gap-3">
                       <span>مقالات قد تهمك</span>
                       <div className="w-2 h-8 bg-primary-500 rounded-full"></div>
                    </h4>
 
-                   <div className="space-y-8">
+                   <div className="space-y-6">
                       {recentArticles.map((ra) => (
                         <Link 
                           key={ra.id} 
                           to={`/articles/${ra.id}`}
-                          className={`flex items-start gap-4 group text-right transition-all p-4 rounded-2xl hover:bg-white hover:shadow-lg ${ra.id === article.id ? 'bg-white shadow-md border-r-4 border-primary-500' : ''}`}
+                          className={`flex items-start gap-4 group text-right transition-all p-3 rounded-2xl hover:bg-white hover:shadow-md ${ra.id === article.id ? 'bg-white shadow-sm border-r-4 border-primary-500' : ''}`}
                         >
                            <div className="flex-1">
                               <span className="text-[10px] font-black text-primary-500 uppercase tracking-widest block mb-1">{ra.category}</span>
-                              <h5 className="text-base font-black text-secondary-900 group-hover:text-primary-500 transition-colors leading-snug line-clamp-2">
+                              <h5 className="text-sm font-black text-secondary-900 group-hover:text-primary-500 transition-colors leading-snug line-clamp-2">
                                  {ra.title}
                               </h5>
                               <span className="text-[10px] text-gray-400 font-bold mt-2 block">{ra.date}</span>
                            </div>
-                           <div className="w-24 h-24 rounded-2xl overflow-hidden shrink-0 shadow-sm border border-gray-100">
+                           <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0 shadow-sm border border-gray-50">
                               <img src={ra.image} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                            </div>
                         </Link>
                       ))}
                    </div>
 
-                   <Link to="/articles" className="mt-12 w-full py-5 bg-secondary-950 text-white rounded-2xl font-black flex items-center justify-center gap-3 hover:bg-primary-500 transition-all transform hover:-translate-y-1">
+                   <Link to="/articles" className="mt-10 w-full py-4 bg-secondary-950 text-white rounded-xl font-black flex items-center justify-center gap-3 hover:bg-primary-500 transition-all transform hover:-translate-y-1">
                       <span>عرض جميع المقالات</span>
-                      <ArrowLeft size={20} />
+                      <ArrowLeft size={18} />
                    </Link>
-                </div>
-
-                {/* Newsletter Sidebar box */}
-                <div className="mt-10 p-10 bg-primary-500 text-secondary-950 rounded-[3rem] text-center relative overflow-hidden">
-                   <div className="relative z-10">
-                     <h4 className="text-2xl font-black mb-4 leading-tight">اشترك في <br />نشرتنا البريدية</h4>
-                     <p className="text-secondary-950/70 font-bold text-sm mb-8">ابقى على اطلاع بأحدث أخبار ومشاريع صرح البناء</p>
-                     <div className="space-y-3">
-                       <input className="w-full py-4 px-6 bg-white/20 border border-white/20 rounded-xl placeholder:text-secondary-950/50 text-secondary-950 font-bold focus:outline-none focus:ring-2 ring-white/50" placeholder="بريدك الإلكتروني" />
-                       <button className="w-full py-4 bg-white text-secondary-950 rounded-xl font-black hover:bg-secondary-950 hover:text-white transition-all">اشترك الآن</button>
-                     </div>
-                   </div>
-                   <Quote className="absolute -bottom-10 -right-10 w-40 h-40 text-white/10" />
                 </div>
              </div>
           </aside>
