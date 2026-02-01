@@ -14,9 +14,21 @@ import Privacy from './pages/Legal/Privacy';
 import Articles from './pages/Articles/Articles';
 import ArticleDetails from './pages/Articles/ArticleDetails';
 
+// Dashboard imports
+import DashboardLayout from './dashboard/layout/DashboardLayout';
+import DashboardHome from './dashboard/pages/DashboardHome';
+import ServicesManagement from './dashboard/pages/ServicesManagement';
+import ProjectsManagement from './dashboard/pages/ProjectsManagement';
+import JobsManagement from './dashboard/pages/JobsManagement';
+import TestimonialsManagement from './dashboard/pages/TestimonialsManagement';
+import ServiceRequestsInbox from './dashboard/pages/ServiceRequestsInbox';
+import JobApplicationsInbox from './dashboard/pages/JobApplicationsInbox';
+import ContactMessagesInbox from './dashboard/pages/ContactMessagesInbox';
+
 function App() {
   return (
     <Routes>
+      {/* Main Website Routes */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
@@ -30,6 +42,18 @@ function App() {
         <Route path="request-service" element={<ServiceRequest />} />
         <Route path="terms" element={<Terms />} />
         <Route path="privacy" element={<Privacy />} />
+      </Route>
+
+      {/* Admin Dashboard Routes */}
+      <Route path="/admin" element={<DashboardLayout />}>
+        <Route index element={<DashboardHome />} />
+        <Route path="services" element={<ServicesManagement />} />
+        <Route path="projects" element={<ProjectsManagement />} />
+        <Route path="jobs" element={<JobsManagement />} />
+        <Route path="testimonials" element={<TestimonialsManagement />} />
+        <Route path="service-requests" element={<ServiceRequestsInbox />} />
+        <Route path="job-applications" element={<JobApplicationsInbox />} />
+        <Route path="contact-messages" element={<ContactMessagesInbox />} />
       </Route>
     </Routes>
   );
