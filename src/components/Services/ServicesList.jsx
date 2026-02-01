@@ -1,53 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Building2, Home, Ruler, Hammer, PaintBucket, Truck, ArrowLeft } from 'lucide-react';
+import { Building2, ArrowLeft, Loader2 } from 'lucide-react';
+import { API_URL } from '../../config';
 
 const ServicesList = () => {
-  const services = [
-    {
-      id: 1,
-      icon: Building2,
-      title: 'بناء الأبراج التجارية',
-      desc: 'تنفيذ الأبراج والمباني التجارية بأحدث الأنظمة الإنشائية والتقنيات الذكية.',
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1000&auto=format&fit=crop'
-    },
-    {
-      id: 2,
-      icon: Home,
-      title: 'الفلل السكنية',
-      desc: 'بناء فلل وقصور فاخرة بتصاميم عصرية وتشطيبات عالية الجودة تناسب ذوقك.',
-      image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1000&auto=format&fit=crop'
-    },
-    {
-      id: 3,
-      icon: Ruler,
-      title: 'التخطيط العمراني',
-      desc: 'تخطيط وتصميم المجمعات السكنية والمخططات العمرانية وفق المعايير العالمية.',
-      image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1000&auto=format&fit=crop'
-    },
-    {
-      id: 4,
-      icon: Hammer,
-      title: 'أعمال الترميم',
-      desc: 'خدمات صيانة وترميم المباني القديمة وإعادة تأهيلها لتواكب العصر.',
-      image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=1000&auto=format&fit=crop'
-    },
-    {
-      id: 5,
-      icon: PaintBucket,
-      title: 'الديكور الداخلي',
-      desc: 'تصميم وتنفيذ ديكورات داخلية وخارجية بلمسات فنية وإبداعية.',
-      image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1000&auto=format&fit=crop'
-    },
-    {
-      id: 6,
-      icon: Truck,
-      title: 'تجهيز المواقع',
-      desc: 'أعمال الحفر والردم وتجهيز المواقع الإنشائية والبنية التحتية.',
-      image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1000&auto=format&fit=crop'
-    },
-  ];
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch(`${API_URL}/services`);
+        if (response.ok) {
+          const data = await response.json();
+          setServices(data.map(s => ({
+            ...s,
+            id: s._id,
+            title: s.name,
+            desc: s.description,
+            // Use emoji if available, else fallback icon component
+            iconDisplay: s.icon ? s.icon : <Building2 size={32} strokeWidth={1.5} />,
+            image: s.image || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1000&auto=format&fit=crop'
+          })));
+        }
+      } catch (err) {
+        console.error('Error fetching services:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="w-12 h-12 text-primary-500 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 max-w-7xl relative z-10 py-24">
@@ -73,7 +66,7 @@ const ServicesList = () => {
               
               <div className="relative h-full p-10 flex flex-col justify-end z-10 text-right" dir="rtl">
                  <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-primary-500 mb-6 border border-white/20 group-hover:bg-primary-500 group-hover:text-white transition-all duration-500 group-hover:rotate-[360deg]">
-                    <service.icon size={32} strokeWidth={1.5} />
+                    <span className="text-3xl">{service.iconDisplay}</span>
                  </div>
                  
                  <h3 className="text-3xl font-black text-white mb-4 font-cairo group-hover:text-primary-500 transition-colors">

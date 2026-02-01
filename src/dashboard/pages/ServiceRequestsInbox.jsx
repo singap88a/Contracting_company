@@ -1,55 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DataTable from '../components/DataTable';
 import Modal from '../components/Modal';
+import { API_URL } from '../../config';
+import { useAuth } from '../../context/AuthContext';
+import { Loader2 } from 'lucide-react';
 
 const ServiceRequestsInbox = () => {
-  const [requests, setRequests] = useState([
-    { 
-      id: 1, 
-      fullName: 'أحمد محمد العلي', 
-      mobile: '0501234567',
-      email: 'ahmed@example.com', 
-      serviceType: 'البناء والتشييد',
-      city: 'الرياض',
-      budget: '500000 - 1000000',
-      area: '300',
-      projectDescription: 'أرغب في بناء فيلا سكنية من دورين بتصميم عصري حديث',
-      status: 'جديد',
-      date: '2024-02-01'
-    },
-    { 
-      id: 2, 
-      fullName: 'سارة أحمد الغامدي', 
-      mobile: '0507654321',
-      email: 'sara@example.com', 
-      serviceType: 'التصميم المعماري',
-      city: 'جدة',
-      budget: '100000 - 200000',
-      area: '500',
-      projectDescription: 'أحتاج تصميم معماري لمبنى تجاري من 3 طوابق',
-      status: 'قيد المراجعة',
-      date: '2024-01-31'
-    },
-    { 
-      id: 3, 
-      fullName: 'خالد علي المطيري', 
-      mobile: '0509876543',
-      email: 'khaled@example.com', 
-      serviceType: 'الصيانة والترميم',
-      city: 'الدمام',
-      budget: '50000 - 100000',
-      area: '200',
-      projectDescription: 'صيانة وترميم مبنى قديم وإعادة تأهيله',
-      status: 'مكتمل',
-      date: '2024-01-30'
+  const { token, logout } = useAuth();
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  const fetchRequests = async () => {
+    try {
+      const response = await fetch(`${API_URL}/service-requests`, {
+        headers: {
+          'x-auth-token': token
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setRequests(data.map(r => ({ ...r, id: r._id })));
+      } else if (response.status === 401) {
+        logout();
+      }
+    } catch (err) {
+      console.error('Error fetching requests:', err);
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
 
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns = [
-    { key: 'id', label: '#', sortable: true },
     { key: 'fullName', label: 'الاسم الكامل', sortable: true },
     { key: 'mobile', label: 'رقم الجوال' },
     { key: 'serviceType', label: 'نوع الخدمة' },
@@ -75,11 +63,30 @@ const ServiceRequestsInbox = () => {
     setIsModalOpen(true);
   };
 
-  const handleStatusChange = (newStatus) => {
-    setRequests(requests.map(r => 
-      r.id === selectedRequest.id ? { ...r, status: newStatus } : r
-    ));
-    setSelectedRequest({ ...selectedRequest, status: newStatus });
+  const handleStatusChange = async (newStatus) => {
+    try {
+      const response = await fetch(`${API_URL}/service-requests/${selectedRequest.id}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (response.ok) {
+        setRequests(requests.map(r => 
+          r.id === selectedRequest.id ? { ...r, status: newStatus } : r
+        ));
+        setSelectedRequest({ ...selectedRequest, status: newStatus });
+      } else if (response.status === 401) {
+        alert('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى.');
+        logout();
+      }
+    } catch (err) {
+      console.error('Error updating status:', err);
+      alert('حدث خطأ أثناء تحديث الحالة.');
+    }
   };
 
   return (
@@ -114,11 +121,17 @@ const ServiceRequestsInbox = () => {
 
       {/* Requests Table */}
       <div className="dashboard-card">
-        <DataTable
-          columns={columns}
-          data={requests}
-          onEdit={handleView}
-        />
+        {loading ? (
+          <div className="flex items-center justify-center p-20 bg-white rounded-2xl shadow-sm">
+            <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
+          </div>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={requests}
+            onEdit={handleView}
+          />
+        )}
       </div>
 
       {/* View Modal */}

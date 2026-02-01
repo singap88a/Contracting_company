@@ -9,7 +9,7 @@ const processImages = async (images) => {
     if (!images || !Array.isArray(images)) return [];
     
     return await Promise.all(images.map(async (img) => {
-        if (img && img.startsWith('data:image')) {
+        if (img && typeof img === 'string' && img.startsWith('data:image')) {
             try {
                 const base64Data = img.replace(/^data:image\/\w+;base64,/, '');
                 const buffer = Buffer.from(base64Data, 'base64');

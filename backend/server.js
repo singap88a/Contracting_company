@@ -18,6 +18,8 @@ app.use(cors());
 // Define Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
+app.use('/api/services', require('./routes/serviceRoutes'));
+app.use('/api/service-requests', require('./routes/serviceRequestRoutes'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // Serve static assets in production

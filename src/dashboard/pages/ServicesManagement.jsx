@@ -1,49 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DataTable from '../components/DataTable';
 import Modal from '../components/Modal';
 import FormInput from '../components/FormInput';
-import { Plus } from 'lucide-react';
+import { Plus, Loader2, Trash2, AlertTriangle } from 'lucide-react';
+import { API_URL } from '../../config';
+import { useAuth } from '../../context/AuthContext';
 
 const ServicesManagement = () => {
-  const [services, setServices] = useState([
-    { 
-      id: 1, 
-      name: 'البناء والتشييد', 
-      description: 'خدمات بناء وتشييد المباني السكنية والتجارية بأعلى معايير الجودة', 
-      icon: '🏗️',
-      image: null
-    },
-    { 
-      id: 2, 
-      name: 'التصميم المعماري', 
-      description: 'تصميم معماري احترافي للمشاريع السكنية والتجارية', 
-      icon: '📐',
-      image: null
-    },
-    { 
-      id: 3, 
-      name: 'الصيانة والترميم', 
-      description: 'صيانة وترميم المباني القديمة وإعادة تأهيلها', 
-      icon: '🔧',
-      image: null
+  const { token, logout } = useAuth();
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      const response = await fetch(`${API_URL}/services`);
+      if (response.ok) {
+        const data = await response.json();
+        setServices(data.map(s => ({ ...s, id: s._id })));
+      }
+    } catch (err) {
+      console.error('Error fetching services:', err);
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [serviceToDelete, setServiceToDelete] = useState(null);
   const [editingService, setEditingService] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    icon: '',
+    icon: '🏗️',
     image: null
   });
 
+  const commonEmojis = [
+    '🏗️', '🏢', '🏠', '📐', '🔧', '🔨', '🎨', '🧹', '🔌', '🚿', 
+    '🧱', '🚇', '🌉', '🏫', '🏪', '🏭', '🏛️', '🏕️', '🌳', '💡',
+    '🌳', '🌱', '🚜', '🚚', '📦', '🔑', '🛡️', '📊', '🤝', '💰'
+  ];
+
   const columns = [
-    { key: 'id', label: '#', sortable: true },
     { 
       key: 'icon', 
       label: 'الأيقونة',
-      render: (icon) => <span className="text-2xl">{icon}</span>
+      render: (icon) => <span className="text-2xl bg-gray-50 w-12 h-12 flex items-center justify-center rounded-xl">{icon}</span>
     },
     { key: 'name', label: 'اسم الخدمة', sortable: true },
     { key: 'description', label: 'الوصف' }
@@ -61,37 +68,82 @@ const ServicesManagement = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = (service) => {
-    if (window.confirm(`هل أنت متأكد من حذف الخدمة "${service.name}"؟`)) {
-      setServices(services.filter(s => s.id !== service.id));
+  const handleDeleteClick = (service) => {
+    setServiceToDelete(service);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!serviceToDelete) return;
+    
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/services/${serviceToDelete.id}`, {
+        method: 'DELETE',
+        headers: {
+          'x-auth-token': token
+        }
+      });
+
+      if (response.ok) {
+        setServices(services.filter(s => s.id !== serviceToDelete.id));
+        setIsDeleteModalOpen(false);
+        setServiceToDelete(null);
+      } else if (response.status === 401) {
+        alert('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى.');
+        logout();
+      }
+    } catch (err) {
+      console.error('Error deleting service:', err);
+      alert('حدث خطأ أثناء حذف الخدمة.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     
-    if (editingService) {
-      // Update existing service
-      setServices(services.map(s => 
-        s.id === editingService.id ? { ...formData, id: s.id } : s
-      ));
-    } else {
-      // Add new service
-      const newService = {
-        ...formData,
-        id: Math.max(...services.map(s => s.id), 0) + 1
-      };
-      setServices([...services, newService]);
+    const method = editingService ? 'PUT' : 'POST';
+    const url = editingService 
+      ? `${API_URL}/services/${editingService.id}`
+      : `${API_URL}/services`;
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        await fetchServices();
+        setIsModalOpen(false);
+        setFormData({ name: '', description: '', icon: '', image: null });
+      } else if (response.status === 401) {
+        alert('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى.');
+        logout();
+      }
+    } catch (err) {
+      console.error('Error saving service:', err);
+      alert('حدث خطأ أثناء حفظ الخدمة.');
+    } finally {
+      setLoading(false);
     }
-    
-    setIsModalOpen(false);
-    setFormData({ name: '', description: '', icon: '', image: null });
   };
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'image' && files && files[0]) {
-      setFormData(prev => ({ ...prev, [name]: files[0] }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, [name]: reader.result }));
+      };
+      reader.readAsDataURL(files[0]);
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -115,12 +167,18 @@ const ServicesManagement = () => {
       </div>
 
       {/* Services Table */}
-      <DataTable
-        columns={columns}
-        data={services}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      {loading ? (
+        <div className="flex items-center justify-center p-20 bg-white rounded-2xl shadow-sm">
+          <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
+        </div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={services}
+          onEdit={handleEdit}
+          onDelete={handleDeleteClick}
+        />
+      )}
 
       {/* Add/Edit Modal */}
       <Modal
@@ -149,14 +207,31 @@ const ServicesManagement = () => {
             required
           />
 
-          <FormInput
-            label="الأيقونة (Emoji)"
-            name="icon"
-            value={formData.icon}
-            onChange={handleChange}
-            placeholder="🏗️"
-            required
-          />
+          <div className="space-y-2 mb-6">
+            <label className="block text-sm font-bold text-gray-700">اختيار الأيقونة</label>
+            <div className="grid grid-cols-10 gap-2 p-3 bg-gray-50 rounded-2xl border border-gray-100 max-h-[150px] overflow-y-auto">
+              {commonEmojis.map(emoji => (
+                <button
+                  key={emoji}
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, icon: emoji }))}
+                  className={`text-2xl p-2 rounded-xl transition-all ${
+                    formData.icon === emoji 
+                      ? 'bg-orange-500 text-white scale-110 shadow-lg shadow-orange-500/30' 
+                      : 'hover:bg-white hover:shadow-sm'
+                  }`}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-3 mt-2">
+              <span className="text-sm text-gray-500">الأيقونة المختارة:</span>
+              <span className="text-2xl bg-white w-12 h-12 flex items-center justify-center rounded-xl border border-orange-200 text-orange-600 font-bold shadow-sm">
+                {formData.icon}
+              </span>
+            </div>
+          </div>
 
           <FormInput
             label="صورة الخدمة"
@@ -182,6 +257,39 @@ const ServicesManagement = () => {
             </button>
           </div>
         </form>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="تأكيد الحذف"
+      >
+        <div className="text-center py-6">
+          <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <AlertTriangle size={40} />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">هل أنت متأكد؟</h3>
+          <p className="text-gray-600 mb-8 px-4">
+            أنت على وشك حذف الخدمة <span className="font-bold text-red-600">"{serviceToDelete?.name}"</span>. 
+            هذا الإجراء لا يمكن التراجع عنه.
+          </p>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={confirmDelete}
+              className="px-6 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-colors flex-1 flex items-center justify-center gap-2"
+            >
+              <Trash2 size={18} />
+              حذف الآن
+            </button>
+            <button
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors flex-1"
+            >
+              إلغاء
+            </button>
+          </div>
+        </div>
       </Modal>
     </div>
   );
