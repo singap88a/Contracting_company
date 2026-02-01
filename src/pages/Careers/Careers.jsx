@@ -1,18 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import JobList from '../../components/Careers/JobList';
 import ApplicationForm from '../../components/Careers/ApplicationForm';
-
 import { motion } from 'framer-motion';
+import { API_URL } from '../../config';
+import { Loader2 } from 'lucide-react';
 
 const Careers = () => {
-  const jobs = [
-    { id: 1, title: 'مهندس مدني أول', location: 'الرياض', type: 'دوام كامل' },
-    { id: 2, title: 'مهندس معماري', location: 'جدة', type: 'دوام كامل' },
-    { id: 3, title: 'مشرف موقع', location: 'الدمام', type: 'عقد مشروع' },
-    { id: 4, title: 'محاسب تكاليف', location: 'الرياض', type: 'دوام كامل' },
-  ];
-
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState(null);
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    try {
+      const response = await fetch(`${API_URL}/jobs`);
+      if (response.ok) {
+        const data = await response.json();
+        // Only show open jobs
+        setJobs(data.filter(j => j.status === 'Open').map(j => ({ ...j, id: j._id })));
+      }
+    } catch (err) {
+      console.error('Error fetching jobs:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="bg-white min-h-screen">

@@ -20,6 +20,8 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/services', require('./routes/serviceRoutes'));
 app.use('/api/service-requests', require('./routes/serviceRequestRoutes'));
+app.use('/api/jobs', require('./routes/jobRoutes'));
+app.use('/api/job-applications', require('./routes/jobApplicationRoutes'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // Serve static assets in production

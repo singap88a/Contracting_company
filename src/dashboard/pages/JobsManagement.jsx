@@ -1,56 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DataTable from '../components/DataTable';
 import Modal from '../components/Modal';
 import FormInput from '../components/FormInput';
-import { Plus } from 'lucide-react';
+import { Plus, Loader2, Trash2, AlertTriangle } from 'lucide-react';
+import { API_URL } from '../../config';
+import { useAuth } from '../../context/AuthContext';
 
 const JobsManagement = () => {
-  const [jobs, setJobs] = useState([
-    { 
-      id: 1, 
-      title: 'مهندس مدني', 
-      name: 'مهندس مدني - قسم التنفيذ',
-      description: 'نبحث عن مهندس مدني ذو خبرة في إدارة المشاريع الإنشائية',
-      employmentType: 'دوام كامل',
-      applicants: 12 
-    },
-    { 
-      id: 2, 
-      title: 'مهندس معماري', 
-      name: 'مهندس معماري - قسم التصميم',
-      description: 'مطلوب مهندس معماري للعمل على تصميم المشاريع السكنية والتجارية',
-      employmentType: 'دوام كامل',
-      applicants: 8 
-    },
-    { 
-      id: 3, 
-      title: 'مدير مشاريع', 
-      name: 'مدير مشاريع - إدارة عليا',
-      description: 'مدير مشاريع لإدارة المشاريع الكبرى',
-      employmentType: 'عقد مشروع',
-      applicants: 25 
-    }
-  ]);
-
+  const { token, logout } = useAuth();
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [jobToDelete, setJobToDelete] = useState(null);
   const [editingJob, setEditingJob] = useState(null);
+  
   const [formData, setFormData] = useState({
     title: '',
-    name: '',
     description: '',
-    employmentType: 'دوام كامل'
+    requirements: '',
+    location: '',
+    type: 'Full-time',
+    status: 'Open'
   });
 
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    try {
+      const response = await fetch(`${API_URL}/jobs`);
+      if (response.ok) {
+        const data = await response.json();
+        setJobs(data.map(j => ({ ...j, id: j._id })));
+      }
+    } catch (err) {
+      console.error('Error fetching jobs:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const columns = [
-    { key: 'id', label: '#', sortable: true },
     { key: 'title', label: 'العنوان', sortable: true },
-    { key: 'name', label: 'الاسم الوظيفي', sortable: true },
-    { key: 'employmentType', label: 'نوع الدوام' },
+    { key: 'location', label: 'الموقع', sortable: true },
+    { key: 'type', label: 'نوع الدوام' },
     { 
-      key: 'applicants', 
-      label: 'المتقدمين',
-      render: (count) => (
-        <span className="dashboard-badge badge-info">{count}</span>
+      key: 'status', 
+      label: 'الحالة',
+      render: (status) => (
+        <span className={`dashboard-badge ${status === 'Open' ? 'badge-success' : 'badge-danger'}`}>
+          {status === 'Open' ? 'مفتوح' : 'مغلق'}
+        </span>
       )
     }
   ];
@@ -59,42 +61,85 @@ const JobsManagement = () => {
     setEditingJob(null);
     setFormData({
       title: '',
-      name: '',
       description: '',
-      employmentType: 'دوام كامل'
+      requirements: '',
+      location: '',
+      type: 'Full-time',
+      status: 'Open'
     });
     setIsModalOpen(true);
   };
 
   const handleEdit = (job) => {
     setEditingJob(job);
-    setFormData(job);
+    setFormData({
+      ...job,
+      requirements: Array.isArray(job.requirements) ? job.requirements.join('\n') : job.requirements
+    });
     setIsModalOpen(true);
   };
 
-  const handleDelete = (job) => {
-    if (window.confirm(`هل أنت متأكد من حذف الوظيفة "${job.title}"؟`)) {
-      setJobs(jobs.filter(j => j.id !== job.id));
+  const handleDeleteClick = (job) => {
+    setJobToDelete(job);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!jobToDelete) return;
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/jobs/${jobToDelete.id}`, {
+        method: 'DELETE',
+        headers: { 'x-auth-token': token }
+      });
+
+      if (response.ok) {
+        setJobs(jobs.filter(j => j.id !== jobToDelete.id));
+        setIsDeleteModalOpen(false);
+        setJobToDelete(null);
+      } else if (response.status === 401) {
+        logout();
+      }
+    } catch (err) {
+      console.error('Error deleting job:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     
-    if (editingJob) {
-      setJobs(jobs.map(j => 
-        j.id === editingJob.id ? { ...formData, id: j.id, applicants: j.applicants } : j
-      ));
-    } else {
-      const newJob = {
-        ...formData,
-        id: Math.max(...jobs.map(j => j.id), 0) + 1,
-        applicants: 0
-      };
-      setJobs([...jobs, newJob]);
+    const method = editingJob ? 'PUT' : 'POST';
+    const url = editingJob ? `${API_URL}/jobs/${editingJob.id}` : `${API_URL}/jobs`;
+
+    const payload = {
+      ...formData,
+      requirements: formData.requirements.split('\n').filter(r => r.trim() !== '')
+    };
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        await fetchJobs();
+        setIsModalOpen(false);
+      } else if (response.status === 401) {
+        logout();
+      }
+    } catch (err) {
+      console.error('Error saving job:', err);
+    } finally {
+      setLoading(false);
     }
-    
-    setIsModalOpen(false);
   };
 
   const handleChange = (e) => {
@@ -104,7 +149,6 @@ const JobsManagement = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-[#1a2332]">إدارة الوظائف</h2>
@@ -119,15 +163,19 @@ const JobsManagement = () => {
         </button>
       </div>
 
-      {/* Jobs Table */}
-      <DataTable
-        columns={columns}
-        data={jobs}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      {loading ? (
+        <div className="flex items-center justify-center p-20 bg-white rounded-2xl shadow-sm">
+          <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
+        </div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={jobs}
+          onEdit={handleEdit}
+          onDelete={handleDeleteClick}
+        />
+      )}
 
-      {/* Add/Edit Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -135,23 +183,53 @@ const JobsManagement = () => {
         size="lg"
       >
         <form onSubmit={handleSubmit}>
-          <FormInput
-            label="العنوان الوظيفي"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            placeholder="مثال: مهندس مدني"
-            required
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormInput
+              label="العنوان الوظيفي"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="مثال: مهندس مدني"
+              required
+            />
+            <FormInput
+              label="الموقع"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              placeholder="مثال: الرياض، المملكة العربية السعودية"
+              required
+            />
+          </div>
 
-          <FormInput
-            label="الاسم الوظيفي الكامل"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="مثال: مهندس مدني - قسم التنفيذ"
-            required
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormInput
+              label="نوع الدوام"
+              name="type"
+              type="select"
+              value={formData.type}
+              onChange={handleChange}
+              options={[
+                { value: 'Full-time', label: 'دوام كامل' },
+                { value: 'Part-time', label: 'دوام جزئي' },
+                { value: 'Contract', label: 'عقد مشروع' },
+                { value: 'Internship', label: 'تدريب' }
+              ]}
+              required
+            />
+            <FormInput
+              label="حالة الوظيفة"
+              name="status"
+              type="select"
+              value={formData.status}
+              onChange={handleChange}
+              options={[
+                { value: 'Open', label: 'مفتوح' },
+                { value: 'Closed', label: 'مغلق' }
+              ]}
+              required
+            />
+          </div>
 
           <FormInput
             label="الوصف الوظيفي"
@@ -160,29 +238,22 @@ const JobsManagement = () => {
             value={formData.description}
             onChange={handleChange}
             placeholder="وصف تفصيلي للوظيفة والمهام المطلوبة..."
-            rows={6}
+            rows={4}
             required
           />
 
           <FormInput
-            label="نوع الدوام"
-            name="employmentType"
-            type="select"
-            value={formData.employmentType}
+            label="المتطلبات (كل مطلب في سطر جديد)"
+            name="requirements"
+            type="textarea"
+            value={formData.requirements}
             onChange={handleChange}
-            options={[
-              { value: 'دوام كامل', label: 'دوام كامل' },
-              { value: 'دوام جزئي', label: 'دوام جزئي' },
-              { value: 'عقد مشروع', label: 'عقد مشروع' }
-            ]}
-            required
+            placeholder="مثال: خبرة 5 سنوات..."
+            rows={4}
           />
 
           <div className="flex items-center gap-3 mt-6">
-            <button
-              type="submit"
-              className="dashboard-btn dashboard-btn-primary flex-1"
-            >
+            <button type="submit" className="dashboard-btn dashboard-btn-primary flex-1">
               {editingJob ? 'تحديث الوظيفة' : 'إضافة الوظيفة'}
             </button>
             <button
@@ -194,6 +265,39 @@ const JobsManagement = () => {
             </button>
           </div>
         </form>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="تأكيد الحذف"
+      >
+        <div className="text-center py-6">
+          <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <AlertTriangle size={40} />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">هل أنت متأكد؟</h3>
+          <p className="text-gray-600 mb-8 px-4">
+            أنت على وشك حذف الوظيفة <span className="font-bold text-red-600">"{jobToDelete?.title}"</span>. 
+            هذا الإجراء لا يمكن التراجع عنه.
+          </p>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={confirmDelete}
+              className="px-6 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-colors flex-1 flex items-center justify-center gap-2"
+            >
+              <Trash2 size={18} />
+              حذف الآن
+            </button>
+            <button
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors flex-1"
+            >
+              إلغاء
+            </button>
+          </div>
+        </div>
       </Modal>
     </div>
   );

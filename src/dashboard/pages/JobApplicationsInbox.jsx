@@ -1,62 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DataTable from '../components/DataTable';
 import Modal from '../components/Modal';
-import { Download } from 'lucide-react';
+import { Download, Loader2, Mail, Phone, Calendar, Briefcase } from 'lucide-react';
+import { API_URL } from '../../config';
+import { useAuth } from '../../context/AuthContext';
 
 const JobApplicationsInbox = () => {
-  const [applications, setApplications] = useState([
-    { 
-      id: 1, 
-      fullName: 'محمد أحمد السعيد', 
-      email: 'mohamed@example.com', 
-      phone: '0501234567',
-      jobTitle: 'مهندس مدني',
-      cv: 'mohamed_cv.pdf',
-      coverLetter: 'أنا مهندس مدني ذو خبرة 5 سنوات في مجال البناء والتشييد. عملت على العديد من المشاريع الكبرى في المملكة وأتطلع للانضمام لفريقكم المتميز.',
-      status: 'جديد',
-      date: '2024-02-01'
-    },
-    { 
-      id: 2, 
-      fullName: 'فاطمة علي الزهراني', 
-      email: 'fatima@example.com', 
-      phone: '0507654321',
-      jobTitle: 'مهندس معماري',
-      cv: 'fatima_cv.pdf',
-      coverLetter: 'مهندسة معمارية شغوفة بالتصميم الحديث والمستدام. لدي خبرة 3 سنوات في تصميم المشاريع السكنية والتجارية.',
-      status: 'تمت المراجعة',
-      date: '2024-01-31'
-    },
-    { 
-      id: 3, 
-      fullName: 'عبدالله خالد المطيري', 
-      email: 'abdullah@example.com', 
-      phone: '0509876543',
-      jobTitle: 'مدير مشاريع',
-      cv: 'abdullah_cv.pdf',
-      coverLetter: 'لدي خبرة واسعة في إدارة المشاريع الكبرى تمتد لأكثر من 8 سنوات. نجحت في إدارة مشاريع بقيمة تتجاوز 100 مليون ريال.',
-      status: 'مقبول',
-      date: '2024-01-30'
-    }
-  ]);
-
+  const { token, logout } = useAuth();
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  useEffect(() => {
+    fetchApplications();
+  }, []);
+
+  const fetchApplications = async () => {
+    try {
+      const response = await fetch(`${API_URL}/job-applications`, {
+        headers: {
+          'x-auth-token': token
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setApplications(data.map(a => ({ ...a, id: a._id })));
+      } else if (response.status === 401) {
+        logout();
+      }
+    } catch (err) {
+      console.error('Error fetching applications:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const columns = [
-    { key: 'id', label: '#', sortable: true },
     { key: 'fullName', label: 'الاسم الكامل', sortable: true },
     { key: 'email', label: 'البريد الإلكتروني' },
-    { key: 'phone', label: 'رقم الهاتف' },
-    { key: 'jobTitle', label: 'المسمى الوظيفي' },
-    { key: 'date', label: 'التاريخ', sortable: true },
+    { key: 'mobile', label: 'رقم الهاتف' },
+    { 
+      key: 'jobId', 
+      label: 'المسمى الوظيفي',
+      render: (job) => job?.title || 'غير محدد'
+    },
+    { 
+      key: 'date', 
+      label: 'التاريخ', 
+      sortable: true,
+      render: (date) => new Date(date).toLocaleDateString('ar-SA')
+    },
     { 
       key: 'status', 
       label: 'الحالة',
       render: (status) => (
         <span className={`dashboard-badge ${
           status === 'جديد' ? 'badge-info' : 
-          status === 'تمت المراجعة' ? 'badge-warning' : 
+          status === 'قيد المراجعة' ? 'badge-warning' : 
           status === 'مقبول' ? 'badge-success' :
           'badge-danger'
         }`}>
@@ -71,27 +72,53 @@ const JobApplicationsInbox = () => {
     setIsModalOpen(true);
   };
 
-  const handleStatusChange = (newStatus) => {
-    setApplications(applications.map(a => 
-      a.id === selectedApplication.id ? { ...a, status: newStatus } : a
-    ));
-    setSelectedApplication({ ...selectedApplication, status: newStatus });
+  const handleStatusChange = async (newStatus) => {
+    try {
+      const response = await fetch(`${API_URL}/job-applications/${selectedApplication.id}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (response.ok) {
+        setApplications(applications.map(a => 
+          a.id === selectedApplication.id ? { ...a, status: newStatus } : a
+        ));
+        setSelectedApplication({ ...selectedApplication, status: newStatus });
+      } else if (response.status === 401) {
+        logout();
+      }
+    } catch (err) {
+      console.error('Error updating status:', err);
+    }
   };
 
   const handleDownloadCV = () => {
-    alert(`تحميل السيرة الذاتية: ${selectedApplication.cv}`);
-    // In production, this would trigger actual file download
+    if (!selectedApplication?.cv) return;
+    
+    // Handle base64 CV
+    if (selectedApplication.cv.startsWith('data:')) {
+      const link = document.createElement('a');
+      link.href = selectedApplication.cv;
+      link.download = `CV_${selectedApplication.fullName}.pdf`;
+      link.click();
+    } else {
+      window.open(selectedApplication.cv, '_blank');
+    }
   };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h2 className="text-2xl font-bold text-[#1a2332]">طلبات التوظيف</h2>
-        <p className="text-gray-600 mt-1">جميع طلبات التقديم على الوظائف</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-[#1a2332]">طلبات التوظيف</h2>
+          <p className="text-gray-600 mt-1">جميع طلبات التقديم على الوظائف الواردة</p>
+        </div>
       </div>
 
-      {/* Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="dashboard-card p-4">
           <p className="text-gray-600 text-sm">طلبات جديدة</p>
@@ -100,9 +127,9 @@ const JobApplicationsInbox = () => {
           </p>
         </div>
         <div className="dashboard-card p-4">
-          <p className="text-gray-600 text-sm">تمت المراجعة</p>
+          <p className="text-gray-600 text-sm">قيد المراجعة</p>
           <p className="text-2xl font-bold text-orange-600">
-            {applications.filter(a => a.status === 'تمت المراجعة').length}
+            {applications.filter(a => a.status === 'قيد المراجعة').length}
           </p>
         </div>
         <div className="dashboard-card p-4">
@@ -119,16 +146,20 @@ const JobApplicationsInbox = () => {
         </div>
       </div>
 
-      {/* Applications Table */}
       <div className="dashboard-card">
-        <DataTable
-          columns={columns}
-          data={applications}
-          onEdit={handleView}
-        />
+        {loading ? (
+          <div className="flex items-center justify-center p-20">
+            <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
+          </div>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={applications}
+            onEdit={handleView}
+          />
+        )}
       </div>
 
-      {/* View Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -136,100 +167,88 @@ const JobApplicationsInbox = () => {
         size="lg"
       >
         {selectedApplication && (
-          <div className="space-y-6">
-            {/* Applicant Information */}
-            <div>
-              <h3 className="text-lg font-semibold text-[#1a2332] mb-3">بيانات المتقدم</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-600">الاسم الكامل</p>
-                  <p className="font-semibold">{selectedApplication.fullName}</p>
+          <div className="space-y-6" dir="rtl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-gray-900 border-b pb-2">بيانات المتقدم</h3>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500">
+                    <Mail size={18} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">البريد الإلكتروني</p>
+                    <p className="font-medium">{selectedApplication.email}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600">البريد الإلكتروني</p>
-                  <p className="font-semibold">{selectedApplication.email}</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500">
+                    <Phone size={18} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">رقم الهاتف</p>
+                    <p className="font-medium">{selectedApplication.mobile}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600">رقم الهاتف</p>
-                  <p className="font-semibold">{selectedApplication.phone}</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500">
+                    <Calendar size={18} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">تاريخ التقديم</p>
+                    <p className="font-medium">{new Date(selectedApplication.date).toLocaleDateString('ar-SA')}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600">التاريخ</p>
-                  <p className="font-semibold">{selectedApplication.date}</p>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-gray-900 border-b pb-2">تفاصيل الوظيفة</h3>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-500">
+                    <Briefcase size={18} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">الوظيفة</p>
+                    <p className="font-bold text-blue-600">{selectedApplication.jobId?.title || 'غير محدد'}</p>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <button 
+                    onClick={handleDownloadCV}
+                    className="w-full flex items-center justify-center gap-2 py-3 bg-secondary-900 text-white rounded-xl font-bold hover:bg-secondary-800 transition-colors"
+                  >
+                    <Download size={20} />
+                    تحميل السيرة الذاتية (CV)
+                  </button>
                 </div>
               </div>
             </div>
 
-            {/* Job Title */}
-            <div className="border-t pt-4">
-              <p className="text-sm text-gray-600 mb-2">المسمى الوظيفي المتقدم له</p>
-              <p className="font-semibold bg-blue-50 text-blue-700 px-4 py-3 rounded-lg inline-block text-lg">
-                {selectedApplication.jobTitle}
-              </p>
+            <div className="space-y-3">
+              <h3 className="text-lg font-bold text-gray-900 border-b pb-2">نص الرسالة التعريفية</h3>
+              <div className="bg-gray-50 p-4 rounded-xl text-gray-700 leading-relaxed min-h-[100px]">
+                {selectedApplication.coverLetter || 'لا يوجد رسالة تعريفية'}
+              </div>
             </div>
 
-            {/* Cover Letter */}
-            <div className="border-t pt-4">
-              <p className="text-sm text-gray-600 mb-2">رسالة التعريف</p>
-              <p className="bg-gray-100 p-4 rounded-lg leading-relaxed">{selectedApplication.coverLetter}</p>
-            </div>
-
-            {/* CV Download */}
-            <div className="border-t pt-4">
-              <p className="text-sm text-gray-600 mb-3">السيرة الذاتية</p>
-              <button 
-                onClick={handleDownloadCV}
-                className="dashboard-btn dashboard-btn-secondary flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                تحميل السيرة الذاتية ({selectedApplication.cv})
-              </button>
-            </div>
-
-            {/* Status Management */}
-            <div className="border-t pt-4">
-              <p className="text-sm text-gray-600 mb-3">تغيير الحالة</p>
-              <div className="flex gap-2 flex-wrap">
-                <button
-                  onClick={() => handleStatusChange('جديد')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    selectedApplication.status === 'جديد'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  جديد
-                </button>
-                <button
-                  onClick={() => handleStatusChange('تمت المراجعة')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    selectedApplication.status === 'تمت المراجعة'
-                      ? 'bg-orange-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  تمت المراجعة
-                </button>
-                <button
-                  onClick={() => handleStatusChange('مقبول')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    selectedApplication.status === 'مقبول'
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  مقبول
-                </button>
-                <button
-                  onClick={() => handleStatusChange('مرفوض')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    selectedApplication.status === 'مرفوض'
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  مرفوض
-                </button>
+            <div className="space-y-4 border-t pt-4">
+              <h3 className="text-lg font-bold text-gray-900">تحديث حالة الطلب</h3>
+              <div className="flex flex-wrap gap-2">
+                {['جديد', 'قيد المراجعة', 'مقبول', 'مرفوض'].map(st => (
+                  <button
+                    key={st}
+                    onClick={() => handleStatusChange(st)}
+                    className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
+                      selectedApplication.status === st
+                        ? st === 'مقبول' ? 'bg-green-600 text-white' :
+                          st === 'مرفوض' ? 'bg-red-600 text-white' :
+                          st === 'قيد المراجعة' ? 'bg-orange-600 text-white' :
+                          'bg-blue-600 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {st}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
