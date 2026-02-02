@@ -1,1 +1,1 @@
-export const API_URL = 'http://localhost:5000/api';
+export const API_URL = 'https://contracting-company-backend-2ktm.vercel.app/api';
