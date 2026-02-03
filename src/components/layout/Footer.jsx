@@ -32,7 +32,7 @@ const Footer = () => {
           <div className="space-y-6">
             <div className="flex items-center">
               <img 
-                src="/logo.jpg" 
+                src="/logo.png" 
                 alt="Logo" 
                 className="h-16 w-auto object-contain brightness-110 contrast-110" 
               />

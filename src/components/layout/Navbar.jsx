@@ -47,7 +47,7 @@ const Navbar = () => {
             {/* Logo */}
             <Link to="/" className="flex items-center group h-full py-2">
               <img 
-                src="/logo.jpg" 
+                src="/logo.png" 
                 alt="Logo" 
                 className="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
               />
