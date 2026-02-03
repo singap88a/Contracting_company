@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowUpRight, MapPin, Loader2 } from 'lucide-react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
 import { API_URL } from '../../config';
+
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 const HomeProjects = () => {
     const [projects, setProjects] = useState([]);
@@ -14,7 +19,7 @@ const HomeProjects = () => {
                 const response = await fetch(`${API_URL}/projects`);
                 const data = await response.json();
                 if (response.ok) {
-                    setProjects(data.slice(0, 3)); // Show only 3 projects
+                    setProjects(data);
                 }
             } catch (err) {
                 console.error('Error fetching projects:', err);
@@ -26,12 +31,7 @@ const HomeProjects = () => {
     }, []);
 
     const ProjectCard = ({ project }) => (
-        <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="group relative h-[420px] rounded-[2rem] overflow-hidden cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 bg-gray-900 border border-gray-200"
-        >
+        <div className="group relative h-[420px] rounded-[2rem] overflow-hidden cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 bg-gray-900 border border-gray-200">
             <div className="absolute inset-0">
                 <img 
                     src={project.images?.[0] || 'https://images.unsplash.com/photo-1503387762-592dea58ef21?q=80&w=1000&auto=format&fit=crop'} 
@@ -45,12 +45,12 @@ const HomeProjects = () => {
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/10 rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-tr-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-            <div className="absolute bottom-0 left-0 w-full p-8 z-20">
-                <div className="mb-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+            <div className="absolute bottom-0 left-0 w-full p-8 z-20 text-right" dir="rtl">
+                <div className="mb-4">
                     <span className="inline-block px-5 py-2 bg-white/15 backdrop-blur-md border border-white/30 text-white text-xs font-black rounded-full mb-5 uppercase tracking-wider shadow-lg">
                         {project.category}
                     </span>
-                    <h3 className="text-3xl font-black text-white mb-3 font-cairo leading-tight group-hover:text-primary-300 transition-colors duration-300">
+                    <h3 className="text-3xl font-black text-white mb-3 font-cairo leading-tight group-hover:text-primary-300 transition-colors duration-300 line-clamp-1">
                         {project.title}
                     </h3>
                     <div className="flex items-center gap-2 text-gray-200 text-sm font-bold">
@@ -71,7 +71,7 @@ const HomeProjects = () => {
                     </div>
                 </Link>
             </div>
-        </motion.div>
+        </div>
     );
 
   return (
@@ -85,12 +85,12 @@ const HomeProjects = () => {
       {/* Grid Pattern */}
       <div className="absolute top-0 left-0 w-full h-full opacity-[0.02] bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:32px_32px]"></div>
 
-      <div className="container mx-auto px-4 max-w-7xl relative z-10">
+      <div className="container mx-auto px-4 max-w-7xl relative z-10" dir="rtl">
         
         {/* Header & Nav */}
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
             <div className="flex-1 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
-                <div className="max-w-3xl">
+                <div className="max-w-3xl text-right">
                     <span className="text-secondary-500 font-bold tracking-widest uppercase mb-4 block">معرض الأعمال</span>
                     <h2 className="text-3xl lg:text-5xl font-black text-secondary-900 leading-[1.1]">
                       أحدث <span className="text-primary-500 relative">
@@ -100,7 +100,6 @@ const HomeProjects = () => {
                     </h2>
                 </div>
 
-                {/* Button in Header - Orange */}
                 <Link 
                   to="/projects"
                   className="inline-flex items-center gap-3 px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white font-bold rounded-xl transition-all duration-300 shadow-xl shadow-primary-500/20 group whitespace-nowrap"
@@ -111,20 +110,60 @@ const HomeProjects = () => {
             </div>
         </div>
 
-        {/* Projects Grid - 3 Cards Only */}
         {loading ? (
             <div className="flex items-center justify-center py-20">
                 <Loader2 className="w-10 h-10 text-primary-500 animate-spin" />
             </div>
         ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {projects.map((project, index) => (
-                    <ProjectCard key={project._id} project={project} />
-                ))}
+            <div className="relative">
+                <Swiper
+                    modules={[Autoplay, Pagination]}
+                    spaceBetween={30}
+                    slidesPerView={1}
+                    autoplay={{
+                        delay: 4000,
+                        disableOnInteraction: false,
+                        reverseDirection: true,
+                    }}
+                    pagination={{
+                        clickable: true,
+                        el: '.projects-pagination',
+                    }}
+                    breakpoints={{
+                        640: { slidesPerView: 1.5 },
+                        768: { slidesPerView: 2 },
+                        1024: { slidesPerView: 3 },
+                    }}
+                    loop={projects.length > 3}
+                    className="pb-4"
+                >
+                    {projects.map((project) => (
+                        <SwiperSlide key={project._id} className="pb-4">
+                            <ProjectCard project={project} />
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+                <div className="projects-pagination flex justify-center items-center gap-2 mt-4"></div>
             </div>
         )}
 
       </div>
+      <style>{`
+        .projects-pagination .swiper-pagination-bullet {
+          background: #CBD5E1 !important;
+          opacity: 1 !important;
+          width: 10px !important;
+          height: 10px !important;
+          margin: 0 !important;
+          transition: all 0.3s ease;
+          border-radius: 50% !important;
+        }
+        .projects-pagination .swiper-pagination-bullet-active {
+          background: #F97316 !important;
+          width: 30px !important;
+          border-radius: 10px !important;
+        }
+      `}</style>
     </section>
   );
 };
