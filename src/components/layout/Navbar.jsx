@@ -45,19 +45,12 @@ const Navbar = () => {
         <div className="container mx-auto px-4 max-w-7xl h-full">
           <div className="flex items-center justify-between h-full">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="relative w-11 h-11 flex items-center justify-center bg-secondary-900 rounded-xl overflow-hidden shadow-lg shadow-secondary-900/20 group-hover:shadow-secondary-900/30 transition-all duration-300 group-hover:-translate-y-0.5">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50"></div>
-                <Building2 className="w-5 h-5 text-white relative z-10" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-black leading-none text-secondary-900 group-hover:text-primary-600 transition-colors duration-300">
-                  شركة المقاولات
-                </span>
-                <span className="text-[10px] font-bold tracking-[0.25em] text-gray-400 group-hover:text-secondary-900 transition-colors duration-300 mt-0.5">
-                  للتعمير والإنشاء
-                </span>
-              </div>
+            <Link to="/" className="flex items-center group h-full py-2">
+              <img 
+                src="/logo.jpg" 
+                alt="Logo" 
+                className="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
+              />
             </Link>
 
             {/* Desktop Navigation */}

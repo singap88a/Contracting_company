@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, MessageCircle, Phone, Mail, ArrowLeft, Clock, MapPin, HelpCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../../config';
 
 const FAQ = () => {
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    fetch(`${API_URL}/settings`)
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('Error fetching settings:', err));
+  }, []);
+
   const faqs = [
     {
       question: 'ما هي المناطق التي تغطونها؟',
@@ -22,8 +32,8 @@ const FAQ = () => {
       answer: 'بالتأكيد، لدينا قسم هندسي متكامل يساعدكم في التصميم المعماري والإنشائي، كما نقوم بمتابعة واستخراج كافة التراخيص اللازمة لبدء العمل.'
     },
     {
-        question: 'كم تستغرق عملية البناء عادة؟',
-        answer: 'تختلف المدة حسب حجم وتعقيد المشروع. نقوم بوضع جدول زمني مفصل قبل البدء، ونلتزم بالموعد المحدد للتسليم بدقة متناهية.'
+      question: 'كم تستغرق عملية البناء عادة؟',
+      answer: 'تختلف المدة حسب حجم وتعقيد المشروع. نقوم بوضع جدول زمني مفصل قبل البدء، ونلتزم بالموعد المحدد للتسليم بدقة متناهية.'
     }
   ];
 
@@ -140,7 +150,7 @@ const FAQ = () => {
                             
                         </div>
                         <div className="">
-                                                  <h3 className="mb-6 text-2xl font-black transition-colors duration-300 text-secondary-900 group-hover:text-primary-600">هل لديك سؤال آخر؟</h3>
+                                                   <h3 className="mb-6 text-2xl font-black transition-colors duration-300 text-secondary-900 group-hover:text-primary-600">هل لديك سؤال آخر؟</h3>
 
                         </div>
                       </div>
@@ -155,7 +165,7 @@ const FAQ = () => {
                                     <MapPin size={18} />
                                 </div>
                                 <div>
-                                    <p className="mb-1 text-sm font-black text-secondary-900">الرياض، حي الصحافة</p>
+                                    <p className="mb-1 text-sm font-black text-secondary-900">{settings?.address || 'تحميل...'}</p>
                                     <p className="text-xs font-medium text-gray-400">المقر الرئيسي</p>
                                 </div>
                             </div>
@@ -165,8 +175,8 @@ const FAQ = () => {
                                     <Clock size={18} />
                                 </div>
                                 <div>
-                                    <p className="mb-1 text-sm font-black text-secondary-900">9:00 ص - 6:00 م</p>
-                                    <p className="text-xs font-medium text-gray-400">الأحد - الخميس</p>
+                                    <p className="mb-1 text-sm font-black text-secondary-900">{settings?.workingHours || 'تحميل...'}</p>
+                                    <p className="text-xs font-medium text-gray-400">ساعات العمل</p>
                                 </div>
                             </div>
 
@@ -178,11 +188,11 @@ const FAQ = () => {
                             </Link>
                             
                             <div className="flex gap-3">
-                                <a href="tel:+966500000000" className="flex items-center justify-center flex-1 py-3 text-sm font-black text-gray-600 transition-all border-2 border-gray-200 hover:border-primary-500 hover:bg-primary-50 hover:text-primary-600 rounded-xl group">
+                                <a href={`tel:${settings?.phone}`} className="flex items-center justify-center flex-1 py-3 text-sm font-black text-gray-600 transition-all border-2 border-gray-200 hover:border-primary-500 hover:bg-primary-50 hover:text-primary-600 rounded-xl group">
                                     <Phone size={16} className="ml-2 transition-transform group-hover:scale-110" />
                                     اتصال
                                 </a>
-                                <a href="mailto:info@company.com" className="flex items-center justify-center flex-1 py-3 text-sm font-black text-gray-600 transition-all border-2 border-gray-200 hover:border-primary-500 hover:bg-primary-50 hover:text-primary-600 rounded-xl group">
+                                <a href={`mailto:${settings?.email}`} className="flex items-center justify-center flex-1 py-3 text-sm font-black text-gray-600 transition-all border-2 border-gray-200 hover:border-primary-500 hover:bg-primary-50 hover:text-primary-600 rounded-xl group">
                                     <Mail size={16} className="ml-2 transition-transform group-hover:scale-110" />
                                     إيميل
                                 </a>

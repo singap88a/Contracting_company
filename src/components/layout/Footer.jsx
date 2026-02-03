@@ -30,11 +30,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Company Info */}
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-primary-500/20">
-                C
-              </div>
-              <span className="text-2xl font-black tracking-tight">شركة المقاولات</span>
+            <div className="flex items-center">
+              <img 
+                src="/logo.jpg" 
+                alt="Logo" 
+                className="h-16 w-auto object-contain brightness-110 contrast-110" 
+              />
             </div>
             <p className="text-gray-400 leading-relaxed">
               نحن شركة رائدة في مجال المقاولات والبناء، نسعى دائماً لتقديم أفضل الخدمات بجودة عالية واحترافية تامة لتحقيق رؤية عملائنا.
