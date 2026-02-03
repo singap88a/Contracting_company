@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { API_URL } from '../../config';
 
 const ContactInfo = () => {
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    fetch(`${API_URL}/settings`)
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('Error fetching settings:', err));
+  }, []);
+
+  const infoItems = [
+    { icon: MapPin, title: 'العنوان', info: settings?.address || 'تحميل...' },
+    { icon: Phone, title: 'الهاتف', info: settings?.phone || 'تحميل...' },
+    { icon: Mail, title: 'البريد', info: settings?.email || 'تحميل...' },
+    { icon: Clock, title: 'ساعات العمل', info: settings?.workingHours || 'تحميل...' },
+  ];
+
   return (
     <div className="relative overflow-hidden bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-4 md:p-8">
       {/* Decorative Background Graphics */}
@@ -10,19 +27,14 @@ const ContactInfo = () => {
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
 
       <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0">
-        {[
-          { icon: MapPin, title: 'العنوان', info: 'شارع التخصصي، الرياض' },
-          { icon: Phone, title: 'الهاتف', info: '+966 11 234 5678' },
-          { icon: Mail, title: 'البريد', info: 'info@contracting-co.com' },
-          { icon: Clock, title: 'ساعات العمل', info: 'السبت - الخميس: 8ص - 6م' },
-        ].map((item, i, arr) => (
-          <div key={i} className={`flex flex-col items-center text-center px-6 ${i !== arr.length - 1 ? 'lg:border-l lg:border-gray-100' : ''}`}>
-             <div className="w-14 h-14 bg-primary-50 rounded-2xl flex items-center justify-center text-primary-500 mb-4 shadow-inner group-hover:scale-110 transition-transform duration-500">
+        {infoItems.map((item, i) => (
+          <div key={i} className={`flex flex-col items-center text-center px-6 ${i !== infoItems.length - 1 ? 'lg:border-l lg:border-gray-100' : ''}`}>
+             <div className="w-14 h-14 bg-primary-50 rounded-2xl flex items-center justify-center text-primary-500 mb-4 shadow-inner">
                <item.icon size={26} />
              </div>
              <div>
                <h4 className="font-bold text-secondary-900 mb-2 text-lg">{item.title}</h4>
-               <p className="text-gray-500 text-sm font-semibold leading-relaxed" dir="ltr">{item.info}</p>
+               <p className="text-gray-500 text-sm font-semibold leading-relaxed" dir={item.title === 'الهاتف' ? 'ltr' : 'rtl'}>{item.info}</p>
              </div>
           </div>
         ))}

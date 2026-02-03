@@ -25,6 +25,7 @@ import ServiceRequestsInbox from './dashboard/pages/ServiceRequestsInbox';
 import JobApplicationsInbox from './dashboard/pages/JobApplicationsInbox';
 import ContactMessagesInbox from './dashboard/pages/ContactMessagesInbox';
 import Settings from './dashboard/pages/Settings';
+import SiteSettings from './dashboard/pages/SiteSettings';
 import Login from './pages/Admin/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -66,6 +67,7 @@ function App() {
         <Route path="service-requests" element={<ServiceRequestsInbox />} />
         <Route path="job-applications" element={<JobApplicationsInbox />} />
         <Route path="contact-messages" element={<ContactMessagesInbox />} />
+        <Route path="site-settings" element={<SiteSettings />} />
         <Route path="settings" element={<Settings />} />
       </Route>
     </Routes>

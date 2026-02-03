@@ -1,30 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Building2, Trophy, Clock } from 'lucide-react';
+import { API_URL } from '../../config';
 
 const Statistics = () => {
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    fetch(`${API_URL}/settings`)
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('Error fetching settings:', err));
+  }, []);
+
   const stats = [
     { 
       id: 1, 
-      number: '+15', 
+      number: settings?.statsYears || '+15', 
       label: 'عاماً من التميز',
       icon: Clock,
     },
     { 
       id: 2, 
-      number: '+500', 
+      number: settings?.statsProjects || '+500', 
       label: 'مشروع ناجح',
       icon: Building2,
     },
     { 
       id: 3, 
-      number: '+50', 
+      number: settings?.statsAwards || '+50', 
       label: 'جائزة محلية',
       icon: Trophy,
     },
     { 
       id: 4, 
-      number: '+120', 
+      number: settings?.statsEngineers || '+120', 
       label: 'خبير ومهندس',
       icon: Users,
     },
@@ -65,9 +75,10 @@ const Statistics = () => {
                                 </div>
 
                                 <motion.h3 
+                                    key={stat.number}
                                     initial={{ scale: 0.5, opacity: 0 }}
                                     whileInView={{ scale: 1, opacity: 1 }}
-                                    transition={{ delay: index * 0.1 + 0.5, type: 'spring' }}
+                                    transition={{ delay: index * 0.1, type: 'spring' }}
                                     className="text-5xl md:text-6xl font-black text-white mb-2"
                                 >
                                     {stat.number}

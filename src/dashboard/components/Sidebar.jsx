@@ -11,7 +11,8 @@ import {
   Star,
   Settings as SettingsIcon,
   LogOut,
-  X
+  X,
+  Globe
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -30,6 +31,7 @@ const Sidebar = ({ isOpen, onClose, stats }) => {
         { path: '/admin/services', icon: Briefcase, label: 'الخدمات' },
         { path: '/admin/projects', icon: FolderKanban, label: 'المشاريع' },
         { path: '/admin/jobs', icon: Users, label: 'الوظائف' },
+        { path: '/admin/site-settings', icon: Globe, label: 'بيانات الموقع' },
         { path: '/admin/testimonials', icon: Star, label: 'آراء العملاء' }
       ]
     },
@@ -59,7 +61,7 @@ const Sidebar = ({ isOpen, onClose, stats }) => {
     {
       title: 'النظام',
       items: [
-        { path: '/admin/settings', icon: SettingsIcon, label: 'الإعدادات' }
+        { path: '/admin/settings', icon: SettingsIcon, label: 'حساب المدير' }
       ]
     }
   ];
