@@ -47,17 +47,17 @@ const AboutHero = () => {
             transition={{ duration: 0.8 }}
           >
             <div className="flex items-center gap-3 mb-6  ">
-              <span className="text-primary-500 font-extrabold uppercase tracking-[0.4em] text-sm">إرث من الإتقان</span>
+              <span className="text-primary-500 font-extrabold uppercase tracking-[0.4em] text-sm">ريدان الخليج للسلامة والمقاولات</span>
               <div className="w-12 h-px bg-primary-500/50"></div>
             </div>
             
             <h1 className="text-5xl md:text-8xl font-black text-white leading-tight mb-8">
-              رواد <span className="text-primary-500">البناء</span><br />
-              وصناع المستـقبل
+              الأمان <span className="text-primary-500">أولاً</span><br />
+              والبناء بإتقان
             </h1>
             
             <p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-12 max-w-2xl">
-              نحن في صرح البناء لا نقوم فقط بتشييد المباني، بل نضع أساسات للحضارة والنمو المستدام. خبرتنا التي تمتد لأكثر من عقد ونصف تجعلنا الخيار الأول للمشاريع العملاقة والطموحة.
+              مؤسسة رائدة متخصصة في منظومة السلامة المتكاملة وأعمال المقاولات العامة، نضع معايير الجودة والاستدامة في قلب كل مشروع نلمسه، لنضمن بيئة عمل آمنة ومستقبلاً مستداماً.
             </p>
             
             <div className="flex flex-wrap items-center gap-4 justify-start">

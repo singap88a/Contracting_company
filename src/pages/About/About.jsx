@@ -1,6 +1,7 @@
 import AboutHero from '../../components/About/AboutHero';
 import Statistics from '../../components/Home/Statistics';
 import AboutIntro from '../../components/About/AboutIntro';
+import MissionVision from '../../components/About/MissionVision';
 import AboutValues from '../../components/About/AboutValues';
 import Team from '../../components/About/Team';
 import TestimonialsImmersive from '../../components/About/TestimonialsImmersive';
@@ -14,8 +15,12 @@ const About = () => {
 
 
 
-      {/* 4. Layered Intro (Who We Are) (Image 1/2) */}
+      {/* 4. Layered Intro (Who We Are) */}
       <AboutIntro />
+
+      {/* 4.5 Mission & Vision Section */}
+      <MissionVision />
+
             {/* 2. Statistics Section (Reused from Home) */}
       <Statistics />
 

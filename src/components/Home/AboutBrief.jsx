@@ -6,23 +6,23 @@ const AboutBrief = () => {
   const features = [
     {
       icon: Shield,
-      title: 'معايير جودة صارمة',
-      description: 'نطبق أعلى معايير الجودة العالمية في جميع مراحل التنفيذ لضمان مخرجات استثنائية.'
+      title: 'أنظمة أمن متكاملة',
+      description: 'نقدم أحدث حلول الأمن والسلامة وأنظمة إنذار الحريق المعتمدة.'
     },
     {
       icon: Clock,
-      title: 'التزام دقيق بالمواعيد',
-      description: 'نحترم وقت عملائنا ونعتبر التسليم في الموعد المحدد مقدساً لا يمكن التنازل عنه.'
+      title: 'عقود صيانة معتمدة',
+      description: 'نلتزم بتنفيذ عقود الصيانة الدورية لضمان استمرارية وكفاءة الأنظمة.'
     },
     {
       icon: Users,
-      title: 'فريق عمل نخبوي',
-      description: 'يضم فريقنا أفضل الكفاءات الهندسية والفنية ذوي الخبرات الطويلة في المجال.'
+      title: 'حلول مبتكرة',
+      description: 'التزام بتقديم خدمات متكاملة تواكب المعايير المحلية والعالمية.'
     },
     {
       icon: Star,
-      title: 'خبرة تتحدث عن نفسها',
-      description: 'سجل حافل بالإنجازات والمشاريع الناجحة التي نالت رضا وثقة عملائنا.'
+      title: 'خبرة موثوقة',
+      description: 'منذ ٢٠١٨ في مدينة تبوك، نبني جسور الثقة مع عملائنا في مختلف القطاعات.'
     }
   ];
 
@@ -42,20 +42,20 @@ const AboutBrief = () => {
           
           {/* Text Content */}
           <div>
-            <span className="text-secondary-500 font-bold tracking-widest uppercase mb-4 block">لماذا تختارنا</span>
+            <span className="text-secondary-500 font-bold tracking-widest uppercase mb-4 block">مؤسسة ريدان الخليج</span>
             <h2 className="text-3xl lg:text-5xl font-black text-secondary-900 mb-8 leading-[1.1]">
-              نحن نبني <br />
+              نبحث عن <br />
               <span className="text-primary-500 relative">
-                 الثقة
+                 الأمان
                  <svg className="absolute w-full h-3 -bottom-1 right-0 text-primary-200 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none"/></svg>
-              </span> قبل البناء
+              </span> في كل تفصيلة
             </h2>
             <p className="text-xl text-gray-500 leading-relaxed mb-10 text-justify">
-              في عالم المقاولات، التميز ليس مجرد خيار، بل هو نهج حياة. نحن نؤمن بأن كل مشروع هو قصة نجاح نكتبها مع عملائنا، نراعي فيها أدق التفاصيل ونحرص على تحقيق تطلعاتهم.
+              تأسست مؤسسة ريدان الخليج عام ٢٠١٨ في مدينة تبوك، وهي مؤسسة متخصصة في أنظمة الأمن والسلامة، أعمال إطفاء وإنذار الحريق، وتنفيذ عقود الصيانة المعتمدة. نحن نؤمن بأن السلامة ليست خياراً، بل ضرورة.
             </p>
             
             <ul className="space-y-4 mb-12">
-               {['ضمان شامل على جميع الأعمال', 'استخدام أفضل المواد وحلول مستدامة', 'إشراف هندسي متكامل'].map((item, i) => (
+               {['حلول أمن وسلامة متكاملة', 'تنفيذ مشاريع مقاولات عالية الجودة', 'عقود صيانة معتمدة وموثوقة'].map((item, i) => (
                  <li key={i} className="flex items-center gap-3 text-secondary-800 font-bold text-lg">
                     <CheckCircle className="text-primary-500" size={24} />
                     {item}

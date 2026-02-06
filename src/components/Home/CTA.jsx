@@ -79,7 +79,7 @@ const CTA = () => {
                 transition={{ delay: 0.1 }}
                 className="inline-block mb-3 text-primary-400 font-bold tracking-wider uppercase text-sm"
               >
-                مستعد لبناء مستقبلك؟
+                مؤسسة ريدان الخليج
               </motion.span>
               
               <motion.h2 
@@ -88,14 +88,14 @@ const CTA = () => {
                 transition={{ delay: 0.2 }}
                 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-6 leading-tight"
               >
-                ابدأ رحلة بناء
+                أمان منشأتك يبدأ من
                 <span className="relative inline-block mr-3 text-primary-500">
-                  مشروعك
+                  خبرائنا
                   <svg className="absolute w-full h-3 -bottom-1 right-0 text-primary-500 opacity-50" viewBox="0 0 100 10" preserveAspectRatio="none">
                     <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
                   </svg>
                 </span>
-                <span className="block mt-2 text-white/90">مع خبرائنا المعتمدين</span>
+                <span className="block mt-2 text-white/90">حلول أمنية وهندسية متكاملة</span>
               </motion.h2>
 
               <motion.p 
@@ -104,7 +104,7 @@ const CTA = () => {
                 transition={{ delay: 0.3 }}
                 className="text-gray-400 text-lg leading-relaxed max-w-xl mx-auto lg:mx-0"
               >
-                نحول رؤيتك إلى واقع ملموس بأعلى معايير الجودة والاحترافية. اطلب استشارتك المجانية اليوم.
+                نحن شركاؤك في النجاح والأمان. نقدم أحدث أنظمة السلامة ومشاريع المقاولات المعتمدة بأعلى معايير الجودة في المملكة.
               </motion.p>
             </div>
 

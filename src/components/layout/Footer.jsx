@@ -43,8 +43,8 @@ const Footer = () => {
                 className="h-16 w-auto object-contain brightness-110 contrast-110" 
               />
             </div>
-            <p className="text-gray-400 leading-relaxed">
-              نحن شركة رائدة في مجال المقاولات والبناء، نسعى دائماً لتقديم أفضل الخدمات بجودة عالية واحترافية تامة لتحقيق رؤية عملائنا.
+            <p className="text-gray-400 leading-relaxed font-bold">
+              مؤسسة رائدة متخصصة في أنظمة الأمن والسلامة، أعمال إطفاء وإنذار الحريق، وتنفيذ مشاريع المقاولات العامة برؤية مستدامة وجودة عالية منذ ٢٠١٨.
             </p>
             <div className="flex flex-wrap gap-3">
               {socialLinks.map((social, i) => (
@@ -158,7 +158,7 @@ const Footer = () => {
 
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col md:flex-row items-center gap-1 md:gap-4 text-gray-500 text-sm font-medium">
-            <p className="whitespace-nowrap">جميع الحقوق محفوظة © {new Date().getFullYear()} لشركة المقاولات</p>
+            <p className="whitespace-nowrap">جميع الحقوق محفوظة © {new Date().getFullYear()} لمؤسسة ريدان الخليج</p>
             <span className="hidden md:inline-block w-1 h-1 bg-white/20 rounded-full"></span>
             <p className="flex items-center gap-1 whitespace-nowrap">
               تم التطوير بواسطة 
