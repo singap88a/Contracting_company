@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowUpRight, MapPin, Sparkles, Loader2 } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, MapPin, Sparkles, Loader2, LayoutGrid, Construction, ShieldCheck } from 'lucide-react';
 import { API_URL } from '../../config';
 
 // Static data removed, fetching from backend
@@ -86,9 +86,9 @@ const Projects = () => {
     }, [activeFilter, projects]);
 
     const filters = [
-        { id: 'all', label: 'الكل' },
-        { id: 'contracting', label: 'قسم المقاولات' },
-        { id: 'safety', label: 'قسم السلامة' }
+        { id: 'all', label: 'الكل', icon: LayoutGrid },
+        { id: 'contracting', label: 'قسم المقاولات', icon: Construction },
+        { id: 'safety', label: 'قسم السلامة', icon: ShieldCheck }
     ];
 
   return (
@@ -123,31 +123,41 @@ const Projects = () => {
         </div>
       </section>
 
-      {/* Simplified Grouped Filters */}
-      <section className="pt-12 pb-8 bg-white z-40 border-b border-gray-100/50 backdrop-blur-md">
+      {/* Professional Filter UI */}
+      <section className="pt-12 pb-8 bg-white z-40 relative">
         <div className="container mx-auto px-4 max-w-7xl">
             <div className="flex justify-center">
-                <div className="inline-flex p-1.5 bg-gray-100/80 rounded-[2rem] backdrop-blur-xl border border-gray-200 shadow-inner">
-                    {filters.map((filter) => (
-                        <button
-                            key={filter.id}
-                            onClick={() => setActiveFilter(filter.id)}
-                            className={`relative px-8 md:px-12 py-3.5 rounded-[1.7rem] text-sm font-bold transition-all duration-500 whitespace-nowrap ${
-                                activeFilter === filter.id
-                                    ? 'bg-secondary-900 text-white shadow-xl shadow-secondary-900/20'
-                                    : 'text-secondary-600 hover:text-secondary-900'
-                            }`}
-                        >
-                            {activeFilter === filter.id && (
-                                <motion.div 
-                                    layoutId="activePill"
-                                    className="absolute inset-0 bg-secondary-900 rounded-[1.7rem] -z-10"
-                                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                />
-                            )}
-                            <span className="relative z-10">{filter.label}</span>
-                        </button>
-                    ))}
+                <div className="inline-flex p-1.5 bg-white/40 backdrop-blur-2xl rounded-full border border-primary-500/20 shadow-[0_8px_32px_rgba(249,115,22,0.08)] items-center">
+                    {filters.map((filter) => {
+                        const Icon = filter.icon;
+                        return (
+                            <button
+                                key={filter.id}
+                                onClick={() => setActiveFilter(filter.id)}
+                                className={`group relative px-6 md:px-10 py-3 rounded-full text-sm md:text-base font-black transition-all duration-500 whitespace-nowrap flex items-center gap-2.5 ${
+                                    activeFilter === filter.id
+                                        ? 'text-white'
+                                        : 'text-secondary-900/60 hover:text-secondary-900'
+                                }`}
+                            >
+                                {activeFilter === filter.id && (
+                                    <motion.div 
+                                        layoutId="activePillProjects"
+                                        className="absolute inset-0 bg-primary-500 rounded-full shadow-[0_10px_25px_-5px_rgba(249,115,22,0.4)]"
+                                        transition={{ type: "spring", bounce: 0.15, duration: 0.6 }}
+                                    />
+                                )}
+                                
+                                <Icon size={18} className={`relative z-10 transition-transform duration-300 ${activeFilter === filter.id ? 'scale-110' : 'group-hover:scale-110 opacity-70 group-hover:opacity-100'}`} />
+                                <span className="relative z-10">{filter.label}</span>
+                                
+                                {/* Corner Accent on Hover for Inactive */}
+                                {activeFilter !== filter.id && (
+                                    <div className="absolute inset-0 rounded-full bg-secondary-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
+                                )}
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
         </div>

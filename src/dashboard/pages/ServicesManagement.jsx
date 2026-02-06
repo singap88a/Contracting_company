@@ -37,14 +37,20 @@ const ServicesManagement = () => {
     name: '',
     description: '',
     icon: '🏗️',
-    image: null,
     category: 'contracting'
   });
 
   const commonEmojis = [
     '🏗️', '🏢', '🏠', '📐', '🔧', '🔨', '🎨', '🧹', '🔌', '🚿', 
-    '🧱', '🚇', '🌉', '🏫', '🏪', '🏭', '🏛️', '🏕️', '🌳', '💡',
-    '🌳', '🌱', '🚜', '🚚', '📦', '🔑', '🛡️', '📊', '🤝', '💰'
+    '🧱', '🚇', '🌉', '🏫', '🏪', '🏭', '🏛️', '🏘️', '🏙️', '👷',
+    '🛡️', '🔒', '🧯', '🔦', '🚧', '🛑', '🚩', '📏', '🖊️', '🗒️',
+    '📂', '💼', '📈', '📉', '📊', '📋', '📍', '🗺️', '⚖️', '🤝',
+    '💎', '💡', '⚙️', '🛠️', '🦺', '🧤', '🔋', '📡', '🚜', '🚚',
+    '💻', '🖥️', '📱', '📞', '📧', '🔎', '🗝️', '🔑', '🔓', '🔐',
+    '⛏️', '⚒️', '🔩', '⚙️', '⛓️', '🗜️', '⚖️', '🦯', '🦽', '🦼',
+    '🩺', '🚑', '🚒', '🚔', '🚑', '🚨', '🆘', '⚠️', '🚱', '🚭',
+    '🚯', '🚰', '🚱', '🚳', '🚴', '🚀', '🛸', '🛰️', '🚁', '🛥️',
+    '🚤', '🚢', '⚓', '⛽', '🛢️', '🛸', '🌋', '🗻', '🗼', '🗽'
   ];
 
   const columns = [
@@ -65,7 +71,7 @@ const ServicesManagement = () => {
 
   const handleAdd = () => {
     setEditingService(null);
-    setFormData({ name: '', description: '', icon: '', image: null, category: 'contracting' });
+    setFormData({ name: '', description: '', icon: '🏗️', category: 'contracting' });
     setIsModalOpen(true);
   };
 
@@ -130,7 +136,7 @@ const ServicesManagement = () => {
       if (response.ok) {
         await fetchServices();
         setIsModalOpen(false);
-        setFormData({ name: '', description: '', icon: '', image: null, category: 'contracting' });
+        setFormData({ name: '', description: '', icon: '🏗️', category: 'contracting' });
       } else if (response.status === 401) {
         alert('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى.');
         logout();
@@ -253,13 +259,7 @@ const ServicesManagement = () => {
             </div>
           </div>
 
-          <FormInput
-            label="صورة الخدمة"
-            name="image"
-            type="file"
-            accept="image/*"
-            onChange={handleChange}
-          />
+
 
           <div className="flex items-center gap-3 mt-6">
             <button

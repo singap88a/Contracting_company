@@ -5,12 +5,18 @@ import { API_URL } from '../../config';
 
 const Footer = () => {
   const [settings, setSettings] = useState(null);
+  const [services, setServices] = useState([]);
 
   useEffect(() => {
     fetch(`${API_URL}/settings`)
       .then(res => res.json())
       .then(data => setSettings(data))
       .catch(err => console.error('Error fetching settings:', err));
+
+    fetch(`${API_URL}/services`)
+      .then(res => res.json())
+      .then(data => setServices(data.slice(0, 6)))
+      .catch(err => console.error('Error fetching services:', err));
   }, []);
 
   const socialLinks = [
@@ -90,21 +96,25 @@ const Footer = () => {
                خدماتنا
             </h3>
             <ul className="space-y-4">
-              {[
-                'التصميم المعماري',
-                'البناء والتشييد',
-                'التصميم الداخلي',
-                'ادارة المشاريع',
-                'تنسيق الحدائق',
-                'ترميم المباني'
-              ].map((service, i) => (
-                <li key={i}>
-                  <Link to="/services" className="text-gray-400 hover:text-primary-500 transition-colors flex items-center gap-2 group">
-                     <ArrowRight size={14} className="text-primary-500/50" />
-                    {service}
-                  </Link>
-                </li>
-              ))}
+              {services.length > 0 ? (
+                services.map((service) => (
+                  <li key={service._id}>
+                    <Link to="/services" className="text-gray-400 hover:text-primary-500 transition-colors flex items-center gap-2 group">
+                       <ArrowRight size={14} className="text-primary-500/50" />
+                      {service.name}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                ['البناء والتشييد', 'التصميم الداخلي', 'ادارة المشاريع'].map((s, i) => (
+                  <li key={i}>
+                    <Link to="/services" className="text-gray-400 hover:text-primary-500 transition-colors flex items-center gap-2 group">
+                       <ArrowRight size={14} className="text-primary-500/50" />
+                      {s}
+                    </Link>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
 
@@ -147,9 +157,21 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-gray-500 text-sm font-medium">
-            © {new Date().getFullYear()} جميع الحقوق محفوظة لشركة المقاولات
-          </p>
+          <div className="flex flex-col md:flex-row items-center gap-1 md:gap-4 text-gray-500 text-sm font-medium">
+            <p className="whitespace-nowrap">جميع الحقوق محفوظة © {new Date().getFullYear()} لشركة المقاولات</p>
+            <span className="hidden md:inline-block w-1 h-1 bg-white/20 rounded-full"></span>
+            <p className="flex items-center gap-1 whitespace-nowrap">
+              تم التطوير بواسطة 
+              <a 
+                href="https://ahmedsingap.com/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-primary-500 hover:text-primary-400 transition-colors font-bold border-b border-primary-500/20 hover:border-primary-500"
+              >
+                احمد سنجاب
+              </a>
+            </p>
+          </div>
           <div className="flex gap-8 text-sm text-gray-500 font-medium">
             <Link to="/privacy" className="hover:text-primary-500 transition-colors">سياسة الخصوصية</Link>
             <Link to="/terms" className="hover:text-primary-500 transition-colors">الشروط والأحكام</Link>

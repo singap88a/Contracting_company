@@ -8,6 +8,7 @@ import { API_URL } from '../../config';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
+import ServiceCard from '../Services/ServiceCard';
 
 const ServicesHighlights = () => {
   const [services, setServices] = useState([]);
@@ -24,8 +25,7 @@ const ServicesHighlights = () => {
             id: s._id,
             title: s.name,
             desc: s.description,
-            iconDisplay: s.icon ? s.icon : <Building2 size={32} strokeWidth={1.5} />,
-            image: s.image || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1000&auto=format&fit=crop'
+            iconDisplay: s.icon ? s.icon : '🏗️'
           }));
           setServices(mappedData);
         }
@@ -100,38 +100,9 @@ const ServicesHighlights = () => {
           loop={services.length > 3}
           className="pb-4"
         >
-          {services.map((service) => (
-            <SwiperSlide key={service.id} className="pb-4">
-              <div className="group relative h-[450px] rounded-[2rem] overflow-hidden cursor-pointer shadow-xl">
-                {/* Background Image - Always Visible */}
-                <div className="absolute inset-0">
-                  <img 
-                    src={service.image} 
-                    alt={service.title} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  {/* Permanent Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-secondary-900 via-secondary-900/60 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-80"></div>
-                </div>
-                
-                <div className="relative h-full p-8 flex flex-col justify-end z-10 text-right">
-                   <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-primary-500 mb-6 border border-white/20 group-hover:bg-primary-500 group-hover:text-white transition-all duration-300">
-                      <span className="text-3xl">
-                        {typeof service.iconDisplay === 'string' ? service.iconDisplay : service.iconDisplay}
-                      </span>
-                   </div>
-                   
-                   <h3 className="text-3xl font-bold text-white mb-4 font-cairo line-clamp-1">
-                     {service.title}
-                   </h3>
-                   
-                   <p className="text-gray-300 text-lg leading-relaxed mb-6 opacity-100 transform translate-y-0 transition-all duration-500 line-clamp-2">
-                     {service.desc}
-                   </p>
-                   
-                   <div className="w-full h-[1px] bg-white/20 group-hover:bg-primary-500 transition-colors duration-300"></div>
-                </div>
-              </div>
+          {services.map((service, index) => (
+            <SwiperSlide key={service.id} className="pb-8">
+              <ServiceCard service={service} index={index} />
             </SwiperSlide>
           ))}
         </Swiper>
