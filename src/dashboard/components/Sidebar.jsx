@@ -32,6 +32,7 @@ const Sidebar = ({ isOpen, onClose, stats }) => {
         { path: '/admin/projects', icon: FolderKanban, label: 'المشاريع' },
         { path: '/admin/jobs', icon: Users, label: 'الوظائف' },
         { path: '/admin/site-settings', icon: Globe, label: 'بيانات الموقع' },
+        { path: '/admin/team', icon: Users, label: 'أعضاء الفريق' },
         { path: '/admin/testimonials', icon: Star, label: 'آراء العملاء' }
       ]
     },

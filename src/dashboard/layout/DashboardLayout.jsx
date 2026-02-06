@@ -67,6 +67,7 @@ const DashboardLayout = () => {
     if (path.includes('/projects')) return 'إدارة المشاريع';
     if (path.includes('/jobs')) return 'إدارة الوظائف';
     if (path.includes('/testimonials')) return 'آراء العملاء';
+    if (path.includes('/team')) return 'إدارة فريق العمل';
     if (path.includes('/service-requests')) return 'طلبات الخدمات';
     if (path.includes('/job-applications')) return 'طلبات التوظيف';
     if (path.includes('/contact-messages')) return 'رسائل اتصل بنا';

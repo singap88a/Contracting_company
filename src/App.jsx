@@ -13,6 +13,9 @@ import Terms from './pages/Legal/Terms';
 import Privacy from './pages/Legal/Privacy';
 import Articles from './pages/Articles/Articles';
 import ArticleDetails from './pages/Articles/ArticleDetails';
+import TeamPage from './pages/About/TeamPage';
+import TeamMemberDetails from './pages/About/TeamMemberDetails';
+
 
 // Dashboard imports
 import DashboardLayout from './dashboard/layout/DashboardLayout';
@@ -21,6 +24,8 @@ import ServicesManagement from './dashboard/pages/ServicesManagement';
 import ProjectsManagement from './dashboard/pages/ProjectsManagement';
 import JobsManagement from './dashboard/pages/JobsManagement';
 import TestimonialsManagement from './dashboard/pages/TestimonialsManagement';
+import TeamManagement from './dashboard/pages/TeamManagement';
+
 import ServiceRequestsInbox from './dashboard/pages/ServiceRequestsInbox';
 import JobApplicationsInbox from './dashboard/pages/JobApplicationsInbox';
 import ContactMessagesInbox from './dashboard/pages/ContactMessagesInbox';
@@ -46,6 +51,9 @@ function App() {
         <Route path="request-service" element={<ServiceRequest />} />
         <Route path="terms" element={<Terms />} />
         <Route path="privacy" element={<Privacy />} />
+        <Route path="team" element={<TeamPage />} />
+        <Route path="team/:id" element={<TeamMemberDetails />} />
+
       </Route>
 
       {/* Admin Routes */}
@@ -64,6 +72,8 @@ function App() {
         <Route path="projects" element={<ProjectsManagement />} />
         <Route path="jobs" element={<JobsManagement />} />
         <Route path="testimonials" element={<TestimonialsManagement />} />
+        <Route path="team" element={<TeamManagement />} />
+
         <Route path="service-requests" element={<ServiceRequestsInbox />} />
         <Route path="job-applications" element={<JobApplicationsInbox />} />
         <Route path="contact-messages" element={<ContactMessagesInbox />} />
