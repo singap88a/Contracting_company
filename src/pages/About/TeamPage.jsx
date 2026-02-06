@@ -37,14 +37,7 @@ const TeamPage = () => {
   return (
     <div className="pt-32 pb-24 bg-white min-h-screen" dir="rtl">
       <div className="container mx-auto px-4 max-w-7xl">
-        {/* Breadcrumbs */}
-        <div className="flex items-center gap-2 text-gray-500 mb-8 font-medium">
-          <Link to="/" className="hover:text-primary-500 transition-colors">الرئيسية</Link>
-          <ChevronLeft size={16} />
-          <Link to="/about" className="hover:text-primary-500 transition-colors">عن الشركة</Link>
-          <ChevronLeft size={16} />
-          <span className="text-secondary-900">فريق العمل</span>
-        </div>
+ 
 
         <div className="mb-20 text-center">
           <motion.div
@@ -75,7 +68,7 @@ const TeamPage = () => {
                     <img 
                       src={member.image} 
                       alt={member.name} 
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-100 flex items-center justify-center">

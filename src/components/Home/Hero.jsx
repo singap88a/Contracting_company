@@ -66,9 +66,10 @@ const Hero = () => {
                  className="w-full h-full object-cover"
                />
                {/* Enhanced Gradients */}
-               <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-transparent"></div>
-               <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent"></div>
-               <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-secondary-900/10"></div>
+               {/* Enhanced Gradients - Flipped to Right */}
+               <div className="absolute inset-0 bg-gradient-to-l from-black/90 via-black/60 to-transparent"></div>
+               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
+               <div className="absolute inset-0 bg-gradient-to-bl from-primary-500/10 via-transparent to-secondary-900/10"></div>
             </div>
 
             {/* Geometric Overlay */}

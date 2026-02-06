@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Facebook, Mail, ArrowUpRight, Loader2, MessageCircle } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -12,6 +13,7 @@ import 'swiper/css/pagination';
 const Team = () => {
   const [team, setTeam] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTeam = async () => {
@@ -98,14 +100,15 @@ const Team = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group h-full"
+                className="group h-full cursor-pointer"
+                onClick={() => navigate(`/team/${member._id}`)}
               >
                 <div className="relative rounded-[3.5rem] overflow-hidden bg-white border border-gray-100 mb-8 aspect-[4/5] shadow-2xl">
                   {member.image ? (
                     <img 
                       src={member.image} 
                       alt={member.name} 
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -120,17 +123,33 @@ const Team = () => {
                     </p>
                     <div className="flex gap-3 justify-end">
                       {member.socials?.facebook && (
-                        <a href={member.socials.facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-2xl bg-white/10 hover:bg-primary-500 flex items-center justify-center transition-all transform hover:rotate-12 border border-transparent hover:border-primary-500">
+                        <a 
+                          href={member.socials.facebook} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-10 h-10 rounded-2xl bg-white/10 hover:bg-primary-500 flex items-center justify-center transition-all transform hover:rotate-12 border border-transparent hover:border-primary-500"
+                        >
                           <Facebook size={18} />
                         </a>
                       )}
                       {member.socials?.whatsapp && (
-                        <a href={`https://wa.me/${member.socials.whatsapp}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-2xl bg-white/10 hover:bg-primary-500 flex items-center justify-center transition-all transform hover:rotate-12 border border-transparent hover:border-primary-500">
+                        <a 
+                          href={`https://wa.me/${member.socials.whatsapp}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-10 h-10 rounded-2xl bg-white/10 hover:bg-primary-500 flex items-center justify-center transition-all transform hover:rotate-12 border border-transparent hover:border-primary-500"
+                        >
                           <MessageCircle size={18} />
                         </a>
                       )}
                       {member.socials?.email && (
-                        <a href={`mailto:${member.socials.email}`} className="w-10 h-10 rounded-2xl bg-white/10 hover:bg-primary-500 flex items-center justify-center transition-all transform hover:rotate-12 border border-transparent hover:border-primary-500">
+                        <a 
+                          href={`mailto:${member.socials.email}`} 
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-10 h-10 rounded-2xl bg-white/10 hover:bg-primary-500 flex items-center justify-center transition-all transform hover:rotate-12 border border-transparent hover:border-primary-500"
+                        >
                           <Mail size={18} />
                         </a>
                       )}
@@ -169,6 +188,7 @@ const Team = () => {
           margin: 0 5px !important;
           transition: all 0.3s ease;
           border-radius: 50% !important;
+          cursor: pointer !important;
         }
         .team-pagination .swiper-pagination-bullet-active {
           background: #F97316 !important;
@@ -181,4 +201,3 @@ const Team = () => {
 };
 
 export default Team;
-

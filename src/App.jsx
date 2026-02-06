@@ -1,5 +1,7 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import SplashScreen from './components/Common/SplashScreen';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home/Home';
 import About from './pages/About/About';
@@ -35,8 +37,34 @@ import Login from './pages/Admin/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if splash has been shown in this session
+    const hasSeenSplash = sessionStorage.getItem('splashSeen');
+    
+    if (hasSeenSplash) {
+      setIsLoading(false);
+    } else {
+      // Show splash for 2.5 seconds
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+        sessionStorage.setItem('splashSeen', 'true');
+      }, 4000);
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   return (
-    <Routes>
+    <>
+      <AnimatePresence mode="wait">
+        {isLoading && <SplashScreen />}
+      </AnimatePresence>
+      
+      {!isLoading && (
+        <Routes>
       {/* Main Website Routes */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
@@ -80,7 +108,9 @@ function App() {
         <Route path="site-settings" element={<SiteSettings />} />
         <Route path="settings" element={<Settings />} />
       </Route>
-    </Routes>
+      </Routes>
+      )}
+    </>
   );
 }
 
